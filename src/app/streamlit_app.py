@@ -984,6 +984,7 @@ def _device_lookup_section() -> None:
             display,
             use_container_width=True,
             hide_index=True,
+            height=213,          # ~5 rows visible; scroll for more
             on_select="rerun",
             selection_mode="single-row",
             column_config={
