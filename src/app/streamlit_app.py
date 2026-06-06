@@ -69,27 +69,28 @@ header[data-testid="stHeader"] { background: transparent; }
 
 /* Sidebar nav buttons */
 [data-testid="stSidebar"] .stButton > button {
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    color: #9fa8da !important;
-    font-size: 14px;
-    font-weight: 500;
-    text-align: left;
-    padding: 10px 14px;
+    background: #c4b5a5;
+    border: 1px solid #a89880;
+    border-radius: 8px;
+    color: #1a2744 !important;
+    font-size: 21px;
+    font-weight: 600;
+    text-align: right;
+    justify-content: flex-end;
+    padding: 10px 16px;
     transition: all 0.18s ease;
     width: 100%;
-    margin: 2px 0;
+    margin: 3px 0;
 }
 [data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(63,81,181,0.25) !important;
-    border-color: rgba(63,81,181,0.4);
-    color: #fff !important;
+    background: #a89880 !important;
+    border-color: #8a7860;
+    color: #0d1933 !important;
 }
 [data-testid="stSidebar"] .stButton > button:focus:not(:active) {
-    background: rgba(63,81,181,0.35) !important;
-    border-color: rgba(63,81,181,0.6);
-    color: #fff !important;
+    background: #9a8870 !important;
+    border-color: #7a6850;
+    color: #0d1933 !important;
     box-shadow: none;
 }
 
@@ -2179,7 +2180,7 @@ def main() -> None:
             unsafe_allow_html=True,
         )
         for i, (icon, label, _) in enumerate(NAV_ITEMS):
-            if st.button(f"{icon}  {label}", key=f"nav_{i}", use_container_width=True):
+            if st.button(label, key=f"nav_{i}", use_container_width=True):
                 st.session_state.page = i
                 st.rerun()
 
