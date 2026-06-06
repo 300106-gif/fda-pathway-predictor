@@ -99,6 +99,13 @@ def fetch_pma(max_records: int = 1000) -> list[dict]:
     return _paginate(url, max_records=max_records)
 
 
+def fetch_de_novo(max_records: int = 500) -> list[dict]:
+    """Fetch De Novo records from the 510(k) endpoint (decision_code=DENO)."""
+    url = "https://api.fda.gov/device/510k.json"
+    logger.info("Fetching De Novo records (max %d)…", max_records)
+    return _paginate(url, search="decision_code:DENG", max_records=max_records)
+
+
 def fetch_classification(max_records: int = 500) -> list[dict]:
     """Fetch device classification records."""
     url = "https://api.fda.gov/device/classification.json"
@@ -118,12 +125,17 @@ def build_raw_dataframe() -> pd.DataFrame:
     """
     records_510k = fetch_510k(max_records=2000)
     records_pma = fetch_pma(max_records=1000)
+    records_de_novo = fetch_de_novo(max_records=500)
 
     rows: list[dict] = []
+
+    # Track k_numbers already added to avoid duplicates from the De Novo fetch
+    seen_k_numbers: set[str] = set()
 
     for r in records_510k:
         k_number = str(r.get("k_number", ""))
         pathway = "De Novo" if k_number.startswith("DEN") else "510k"
+        seen_k_numbers.add(k_number)
         rows.append({
             "device_name": r.get("device_name", ""),
             "product_code": r.get("product_code", ""),
@@ -162,6 +174,26 @@ def build_raw_dataframe() -> pd.DataFrame:
             "k_number": "",
             "source": "pma",
             "pathway": "PMA",
+        })
+
+    for r in records_de_novo:
+        k_number = str(r.get("k_number", ""))
+        if k_number in seen_k_numbers:
+            continue  # already captured from the general 510k fetch
+        rows.append({
+            "device_name": r.get("device_name", ""),
+            "product_code": r.get("product_code", ""),
+            "device_class": r.get("device_class", ""),
+            "medical_specialty_description": r.get(
+                "medical_specialty_description", ""
+            ),
+            "decision_code": r.get("decision_code", ""),
+            "decision_date": r.get("decision_date", ""),
+            "implant_flag": r.get("implant_flag", "N"),
+            "life_sustain_support_flag": r.get("life_sustain_support_flag", "N"),
+            "k_number": k_number,
+            "source": "510k",
+            "pathway": "De Novo",
         })
 
     df = pd.DataFrame(rows)

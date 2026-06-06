@@ -1,5 +1,5 @@
 {
-  "row_count": 2999,
+  "row_count": 3475,
   "columns": [
     "device_name",
     "product_code",
@@ -45,7 +45,7 @@
   "pathway_distribution": {
     "510k": 1999,
     "PMA": 999,
-    "De Novo": 1
+    "De Novo": 477
   },
   "feature_columns": [
     "device_name",
@@ -68,10 +68,10 @@
   ],
   "value_ranges": {
     "device_name": {
-      "unique_count": 2908
+      "unique_count": 3381
     },
     "product_code": {
-      "unique_count": 1067
+      "unique_count": 1526
     },
     "device_class": {
       "unique_count": 2
@@ -83,7 +83,7 @@
       "unique_count": 14
     },
     "decision_date": {
-      "unique_count": 2533
+      "unique_count": 2854
     },
     "implant_flag": {
       "unique_count": 1
@@ -92,7 +92,7 @@
       "unique_count": 1
     },
     "k_number": {
-      "unique_count": 2001
+      "unique_count": 2477
     },
     "source": {
       "unique_count": 2

@@ -1,15 +1,15 @@
 # EDA Insights — FDA Pathway Predictor
 
 ## Dataset Overview
-- **Total records**: 2,999
+- **Total records**: 3,475
 - **Feature columns**: `device_name`, `product_code`, `device_class`, `medical_specialty_description`, `decision_code`, `decision_date`, `implant_flag`, `life_sustain_support_flag`, `k_number`, `source`, `decision_year`
 - **Target**: `pathway`
-  - 510k: 1,999 (66.7%), PMA: 999 (33.3%), De Novo: 1 (0.0%)
+  - 510k: 1,999 (57.5%), PMA: 999 (28.7%), De Novo: 477 (13.7%)
 
 ## Key Findings
 
 ### 1. Class Imbalance
-`510k` dominates at **66.7%** of records.
+`510k` dominates at **57.5%** of records.
 Use stratified splitting and **macro F1** as the primary evaluation metric.
 
 ### 2. Device Class — Strong Signal

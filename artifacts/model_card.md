@@ -1,7 +1,7 @@
 # Model Card — FDA Regulatory Pathway Predictor
 
 ## Model Details
-- **Name**: RandomForest
+- **Name**: GradientBoosting
 - **Version**: 1.0.0
 - **Framework**: scikit-learn
 - **Task**: Multi-class classification (3 classes)
@@ -28,8 +28,8 @@ characteristics. **For planning purposes only — not a substitute for regulator
 | `life_sustain_support_flag_bin` | Binary (0/1) | Whether the device is life-sustaining |
 
 ## Performance Summary
-- **Best Model**: RandomForest
-- **Macro F1**: `1.0000`
+- **Best Model**: GradientBoosting
+- **Macro F1**: `0.6313`
 
 See `evaluation_report.md` for full per-class precision, recall, and confusion matrix.
 

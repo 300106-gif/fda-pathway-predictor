@@ -433,7 +433,7 @@ def _dialog_510k() -> None:
     |------|---------|
     | `SESE` | Substantially Equivalent — Cleared |
     | `NSUB` | Not Substantially Equivalent — Not Cleared |
-    | `DENO` | De Novo Pathway Granted |
+    | `DENG` | De Novo Granted |
     | `WTDR` | Withdrawn |
     """)
     st.link_button(
@@ -1090,7 +1090,8 @@ _FDA_FIELDS: dict[str, list[tuple[str, str, str, str]]] = {
 _DECISION_CODES = {
     "510k": {
         "SESE": "Substantially Equivalent — Cleared",
-        "DENO": "De Novo Classification Granted",
+        "DENG": "De Novo Granted",
+        "SESK": "Substantially Equivalent with conditions",
         "NSUB": "Not Substantially Equivalent",
         "WTDR": "Withdrawn",
         "HOLD": "On Hold",
