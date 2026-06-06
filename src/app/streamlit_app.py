@@ -681,10 +681,289 @@ def page_model_performance() -> None:
 # Navigation
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Page 4 — API Explorer
+# ---------------------------------------------------------------------------
+
+# All searchable fields per openFDA device endpoint.
+# Format: (field_name, type, description, example_value)
+_FDA_FIELDS: dict[str, list[tuple[str, str, str, str]]] = {
+    "device/510k": [
+        ("device_name",                   "string",  "Commercial/trade name of the device",                      "Cardiac Monitor"),
+        ("k_number",                      "string",  "510(k) number (prefix DEN = De Novo)",                     "K203487"),
+        ("product_code",                  "string",  "Three-letter FDA product code",                             "DZE"),
+        ("applicant",                     "string",  "Company submitting the 510(k)",                             "Medtronic"),
+        ("device_class",                  "string",  "Device risk class (1, 2, or 3)",                            "2"),
+        ("medical_specialty_description", "string",  "Medical specialty area",                                    "Cardiovascular"),
+        ("decision_code",                 "string",  "Decision outcome (SESE=cleared, DENO=De Novo, etc.)",       "SESE"),
+        ("decision_date",                 "date",    "Date of FDA decision (YYYY-MM-DD or range with [TO])",      "2023-01-01"),
+        ("date_received",                 "date",    "Date application was received",                             "2022-06-15"),
+        ("implant_flag",                  "string",  "Y if device is implantable, N otherwise",                   "Y"),
+        ("life_sustain_support_flag",     "string",  "Y if device is life-sustaining/supporting",                 "N"),
+        ("clearance_type",                "string",  "Type of clearance (Traditional, Abbreviated, etc.)",        "Traditional"),
+        ("expedited_review_flag",         "string",  "Y if expedited review was granted",                         "N"),
+        ("third_party_flag",              "string",  "Y if reviewed by accredited third party",                   "N"),
+        ("statement_or_summary",          "string",  "Whether a statement or summary was submitted",               "Summary"),
+        ("city",                          "string",  "City of the applicant",                                     "Minneapolis"),
+        ("state",                         "string",  "State of the applicant (2-letter code)",                    "MN"),
+        ("country_code",                  "string",  "Country code of the applicant",                             "US"),
+        ("openfda.regulation_number",     "string",  "CFR regulation number (e.g. 870.3710)",                     "870.3710"),
+        ("openfda.device_name",           "string",  "Device name from openFDA harmonized data",                  "Electrocardiograph"),
+        ("openfda.medical_specialty_description", "string", "Specialty from openFDA namespace",                   "Cardiovascular"),
+        ("openfda.fei_number",            "string",  "FDA Establishment Identifier",                              "1234567"),
+    ],
+    "device/pma": [
+        ("trade_name",                    "string",  "Trade name of the device",                                  "HeartMate 3"),
+        ("generic_name",                  "string",  "Generic/common name of the device",                         "Ventricular Assist Device"),
+        ("pma_number",                    "string",  "PMA application number",                                    "P180030"),
+        ("product_code",                  "string",  "Three-letter FDA product code",                             "DQN"),
+        ("applicant",                     "string",  "Company submitting the PMA",                                "Abbott"),
+        ("device_class",                  "string",  "Device risk class (almost always 3 for PMA)",               "3"),
+        ("advisory_committee",            "string",  "Advisory committee short code",                             "CV"),
+        ("advisory_committee_description","string",  "Full name of advisory committee",                           "Cardiovascular"),
+        ("decision_code",                 "string",  "Decision code (APPR=approved, DENY=denied, etc.)",          "APPR"),
+        ("decision_date",                 "date",    "Date of FDA decision",                                      "2022-11-10"),
+        ("date_received",                 "date",    "Date application was received",                             "2021-03-01"),
+        ("expedited_review_flag",         "string",  "Y if expedited review was granted",                         "Y"),
+        ("supplement_type",               "string",  "Type of PMA supplement (if applicable)",                    "PanelTrack"),
+        ("supplement_reason",             "string",  "Reason for the supplement",                                  "New Indication"),
+        ("city",                          "string",  "City of the applicant",                                     "Sylmar"),
+        ("state",                         "string",  "State of the applicant",                                    "CA"),
+        ("country_code",                  "string",  "Country code of the applicant",                             "US"),
+        ("openfda.regulation_number",     "string",  "CFR regulation number",                                     "870.3545"),
+        ("openfda.fei_number",            "string",  "FDA Establishment Identifier",                              "3005847770"),
+    ],
+    "device/classification": [
+        ("device_name",                   "string",  "Device type name",                                          "Pacemaker"),
+        ("product_code",                  "string",  "Three-letter FDA product code",                             "DTB"),
+        ("device_class",                  "string",  "Device risk class (1, 2, or 3)",                            "3"),
+        ("medical_specialty_description", "string",  "Medical specialty area",                                    "Cardiovascular"),
+        ("regulation_number",             "string",  "CFR regulation (Title 21)",                                 "870.3610"),
+        ("submission_type_id",            "string",  "Submission type required (2=510k, 3=PMA, 6=De Novo, etc.)", "2"),
+        ("definition",                    "string",  "Official FDA definition of the device type",                 "electrode"),
+        ("implant_flag",                  "string",  "Y if device type is implantable",                           "Y"),
+        ("life_sustain_support_flag",     "string",  "Y if life-sustaining",                                      "N"),
+        ("gmp_exempt_flag",               "string",  "Y if device is exempt from GMP requirements",               "N"),
+        ("openfda.fei_number",            "string",  "FDA Establishment Identifier",                              "1234567"),
+    ],
+}
+
+_DECISION_CODES = {
+    "510k": {
+        "SESE": "Substantially Equivalent — Cleared",
+        "DENO": "De Novo Classification Granted",
+        "NSUB": "Not Substantially Equivalent",
+        "WTDR": "Withdrawn",
+        "HOLD": "On Hold",
+    },
+    "pma": {
+        "APPR": "Approved",
+        "DENY": "Denied",
+        "WTDR": "Withdrawn",
+        "APRL": "Approved with conditions",
+    },
+}
+
+_SEARCH_SYNTAX = """
+### openFDA Search Syntax
+
+| Syntax | Meaning | Example |
+|--------|---------|---------|
+| `field:value` | Exact match | `device_class:2` |
+| `field:"multi word"` | Phrase match | `device_name:"cardiac monitor"` |
+| `field:[A+TO+Z]` | Range | `decision_date:[2022-01-01+TO+2023-12-31]` |
+| `field:value1+AND+field2:value2` | Both conditions | `device_class:3+AND+implant_flag:Y` |
+| `field:value1+field:value2` | Either condition (OR) | `medical_specialty_description:Cardiovascular+medical_specialty_description:Orthopedic` |
+| `_exists_:field` | Field exists | `_exists_:k_number` |
+
+**Base URL:** `https://api.fda.gov/{endpoint}.json?search={query}&limit={n}`
+
+**Example:** `https://api.fda.gov/device/510k.json?search=device_class:2+AND+implant_flag:Y&limit=10`
+"""
+
+
+def page_api_explorer() -> None:
+    st.markdown("""
+    <div class="page-hero">
+        <h1>🔍 API Search Reference</h1>
+        <p>All searchable openFDA fields for each device endpoint — with a live query builder
+        to construct and preview API calls directly against the openFDA API.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    tab_fields, tab_builder, tab_decisions = st.tabs([
+        "📋 Field Reference", "⚙️ Query Builder", "🏷️ Decision Codes"
+    ])
+
+    # ── Tab 1 — Field Reference ──
+    with tab_fields:
+        st.markdown(_SEARCH_SYNTAX)
+        st.markdown("---")
+
+        endpoint_label = st.selectbox(
+            "Endpoint",
+            list(_FDA_FIELDS.keys()),
+            format_func=lambda x: f"/{x}",
+            key="ref_endpoint",
+        )
+        fields = _FDA_FIELDS[endpoint_label]
+
+        search_filter = st.text_input(
+            "Filter fields", placeholder="e.g. date, implant, device…", key="field_filter"
+        )
+
+        rows = fields
+        if search_filter.strip():
+            q = search_filter.strip().lower()
+            rows = [r for r in fields if q in r[0].lower() or q in r[2].lower()]
+
+        df_fields = pd.DataFrame(rows, columns=["Field Name", "Type", "Description", "Example Value"])
+
+        def make_query(row):
+            val = row["Example Value"]
+            field = row["Field Name"]
+            if " " in val:
+                return f'{field}:"{val}"'
+            return f"{field}:{val}"
+
+        df_fields["Example Search Query"] = df_fields.apply(make_query, axis=1)
+
+        st.markdown(f"**{len(rows)} fields** for `/{endpoint_label}`")
+        st.dataframe(
+            df_fields,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Field Name":          st.column_config.TextColumn(width="medium"),
+                "Type":                st.column_config.TextColumn(width="small"),
+                "Description":         st.column_config.TextColumn(width="large"),
+                "Example Value":       st.column_config.TextColumn(width="small"),
+                "Example Search Query":st.column_config.TextColumn(width="medium"),
+            },
+        )
+
+    # ── Tab 2 — Query Builder ──
+    with tab_builder:
+        st.markdown("Build a query visually, then preview the live API response.")
+
+        b_col1, b_col2 = st.columns([2, 3])
+
+        with b_col1:
+            endpoint = st.selectbox(
+                "Endpoint",
+                list(_FDA_FIELDS.keys()),
+                format_func=lambda x: f"/{x}",
+                key="builder_endpoint",
+            )
+            fields_for_ep = _FDA_FIELDS[endpoint]
+            field_names = [f[0] for f in fields_for_ep]
+            field_descs = {f[0]: f[2] for f in fields_for_ep}
+            field_examples = {f[0]: f[3] for f in fields_for_ep}
+
+            st.markdown("**Conditions** (AND logic)")
+
+            conditions: list[str] = []
+            for i in range(3):
+                c1, c2 = st.columns([2, 2])
+                with c1:
+                    field = st.selectbox(
+                        f"Field {i+1}", ["(none)"] + field_names,
+                        key=f"qb_field_{i}",
+                    )
+                with c2:
+                    placeholder = field_examples.get(field, "value") if field != "(none)" else ""
+                    value = st.text_input(
+                        f"Value {i+1}", placeholder=placeholder,
+                        key=f"qb_value_{i}",
+                        help=field_descs.get(field, "") if field != "(none)" else "",
+                    )
+                if field != "(none)" and value.strip():
+                    v = f'"{value.strip()}"' if " " in value.strip() else value.strip()
+                    conditions.append(f"{field}:{v}")
+
+            limit = st.slider("Result limit", 1, 100, 10, key="qb_limit")
+
+        with b_col2:
+            if conditions:
+                search_str = "+AND+".join(conditions)
+                base = f"https://api.fda.gov/{endpoint}.json"
+                full_url = f"{base}?search={search_str}&limit={limit}"
+            else:
+                full_url = f"https://api.fda.gov/{endpoint}.json?limit={limit}"
+
+            st.markdown("**Generated URL**")
+            st.code(full_url, language="text")
+
+            run_btn = st.button("▶ Run Query", type="primary", key="qb_run")
+
+            if run_btn:
+                import requests as _req
+                with st.spinner("Fetching from openFDA…"):
+                    try:
+                        resp = _req.get(full_url, timeout=15)
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            results = data.get("results", [])
+                            meta = data.get("meta", {})
+                            total = meta.get("results", {}).get("total", "?")
+                            st.success(f"✅ {len(results)} records returned (total matching: {total:,})" if isinstance(total, int) else f"✅ {len(results)} records returned")
+
+                            if results:
+                                # Flatten top-level keys only (skip nested dicts)
+                                flat_rows = []
+                                for rec in results:
+                                    flat_rows.append({
+                                        k: v for k, v in rec.items()
+                                        if not isinstance(v, (dict, list))
+                                    })
+                                st.dataframe(
+                                    pd.DataFrame(flat_rows),
+                                    use_container_width=True,
+                                    hide_index=True,
+                                )
+                                with st.expander("Raw JSON (first result)"):
+                                    st.json(results[0])
+                        elif resp.status_code == 404:
+                            st.warning("No records matched this query.")
+                        else:
+                            st.error(f"API error {resp.status_code}: {resp.text[:300]}")
+                    except Exception as exc:
+                        st.error(f"Request failed: {exc}")
+            else:
+                st.info("Fill in at least one field + value above, then click **Run Query**.")
+
+    # ── Tab 3 — Decision Codes ──
+    with tab_decisions:
+        st.markdown("Reference table of `decision_code` values returned by each endpoint.")
+
+        for ep, codes in _DECISION_CODES.items():
+            st.markdown(f"#### `device/{ep}` — `decision_code` values")
+            code_df = pd.DataFrame(
+                [{"Code": k, "Meaning": v} for k, v in codes.items()]
+            )
+            st.dataframe(code_df, use_container_width=True, hide_index=True)
+            st.markdown("")
+
+        st.markdown("""
+        #### `submission_type_id` — `device/classification`
+        | Value | Meaning |
+        |-------|---------|
+        | `1` | PMA |
+        | `2` | 510(k) |
+        | `3` | PDP |
+        | `4` | PMA Supplement |
+        | `5` | Pre-submission |
+        | `6` | De Novo |
+        | `7` | Transitional |
+        | `8` | STED |
+        """)
+
+
 NAV_ITEMS = [
     ("🏥", "Pathway Predictor",  page_predictor),
     ("📊", "EDA Dashboard",      page_eda),
     ("📉", "Model Performance",  page_model_performance),
+    ("🔍", "API Explorer",       page_api_explorer),
 ]
 
 
