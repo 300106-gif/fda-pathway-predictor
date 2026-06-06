@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 from pathlib import Path
 
 import joblib
@@ -24,15 +25,45 @@ logger = logging.getLogger(__name__)
 
 ARTIFACTS_DIR = Path(__file__).parents[2] / "artifacts"
 
+# Ensure src/ is importable (needed on Streamlit Cloud)
+_ROOT = Path(__file__).parents[2]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
 # ---------------------------------------------------------------------------
 # Page config
 # ---------------------------------------------------------------------------
 st.set_page_config(
     page_title="FDA Pathway Predictor",
-    page_icon="",
+    page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ---------------------------------------------------------------------------
+# Auto-run pipeline if artifacts are missing (e.g. first deploy on Streamlit Cloud)
+# ---------------------------------------------------------------------------
+
+def _pipeline_ready() -> bool:
+    return (ARTIFACTS_DIR / "model.pkl").exists() and (ARTIFACTS_DIR / "clean_data.csv").exists()
+
+
+def _run_pipeline() -> None:
+    """Run full pipeline inline — called once on first deploy."""
+    ARTIFACTS_DIR.mkdir(exist_ok=True)
+    from src.flow.main_flow import run_pipeline
+    run_pipeline()
+
+
+if not _pipeline_ready():
+    with st.spinner("First-time setup: fetching FDA data and training model… (this takes ~1 min)"):
+        try:
+            _run_pipeline()
+            st.success("Pipeline complete! Reloading…")
+            st.rerun()
+        except Exception as exc:
+            st.error(f"Pipeline failed: {exc}")
+            st.stop()
 
 
 # ---------------------------------------------------------------------------

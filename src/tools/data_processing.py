@@ -15,6 +15,15 @@ import seaborn as sns
 logger = logging.getLogger(__name__)
 
 ARTIFACTS_DIR = Path(__file__).parents[2] / "artifacts"
+_CSS_PATH = Path(__file__).parents[1] / "app" / "static" / "eda_style.css"
+
+
+def _load_css() -> str:
+    """Read eda_style.css; return empty string if file is missing."""
+    if _CSS_PATH.exists():
+        return _CSS_PATH.read_text(encoding="utf-8")
+    logger.warning("eda_style.css not found at %s — using no stylesheet.", _CSS_PATH)
+    return ""
 
 
 # ---------------------------------------------------------------------------
@@ -217,78 +226,106 @@ def generate_eda(df: pd.DataFrame) -> None:
         else "N/A"
     )
 
-    html_parts = [
-        "<!DOCTYPE html>",
-        '<html lang="en">',
-        "<head>",
-        '<meta charset="UTF-8">',
-        '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-        "<title>FDA Pathway Predictor — EDA Report</title>",
-        "<style>",
-        "  body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 1100px; margin: auto;",
-        "         padding: 24px; background: #f8f9fa; color: #212529; }",
-        "  h1 { color: #1a237e; margin-bottom: 4px; }",
-        "  h2 { color: #283593; border-bottom: 2px solid #3f51b5; padding-bottom: 6px; margin-top: 32px; }",
-        "  h3 { color: #455a64; }",
-        "  table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }",
-        "  th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }",
-        "  th { background: #3f51b5; color: white; }",
-        "  tr:nth-child(even) { background: #f0f4ff; }",
-        "  .chart { text-align: center; margin: 24px 0; }",
-        "  .chart img { max-width: 100%; border: 1px solid #dee2e6; border-radius: 8px;",
-        "               padding: 12px; background: white; box-shadow: 0 2px 6px rgba(0,0,0,.08); }",
-        "  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));",
-        "               gap: 16px; margin: 20px 0; }",
-        "  .stat-card { background: #e8eaf6; border-radius: 8px; padding: 16px; text-align: center; }",
-        "  .stat-card .value { font-size: 2em; font-weight: bold; color: #1a237e; }",
-        "  .stat-card .label { font-size: .85em; color: #555; margin-top: 4px; }",
-        "  .disclaimer { background: #fff3e0; border-left: 4px solid #ff9800; padding: 12px 16px;",
-        "                border-radius: 4px; margin-top: 32px; }",
-        "</style>",
-        "</head>",
-        "<body>",
-        "<h1>FDA Regulatory Pathway Predictor — EDA Report</h1>",
-        '<div class="stat-grid">',
-        f'  <div class="stat-card"><div class="value">{len(df):,}</div><div class="label">Total Records</div></div>',
-        f'  <div class="stat-card"><div class="value">{len(df.columns) - 1}</div><div class="label">Features</div></div>',
-        f'  <div class="stat-card"><div class="value">{df["pathway"].nunique()}</div><div class="label">Pathway Classes</div></div>',
-        f'  <div class="stat-card"><div class="value">{top_specialty}</div><div class="label">Top Specialty</div></div>',
-        "</div>",
-        "<h2>Pathway Distribution</h2>",
-        "<table>",
-        "<tr><th>Pathway</th><th>Count</th><th>Percentage</th></tr>",
-    ]
+    # Load external CSS and embed it so the report is self-contained
+    css = _load_css()
 
-    for pathway, count in counts.items():
-        pct = 100.0 * count / len(df)
-        html_parts.append(
-            f"<tr><td><strong>{pathway}</strong></td><td>{count:,}</td><td>{pct:.1f}%</td></tr>"
-        )
-    html_parts.append("</table>")
+    # Pathway distribution table rows
+    dist_rows = "\n".join(
+        f"<tr><td><strong>{pw}</strong></td><td>{cnt:,}</td>"
+        f"<td>{100.0 * cnt / len(df):.1f}%</td></tr>"
+        for pw, cnt in counts.items()
+    )
 
-    html_parts.append("<h2>Visualizations</h2>")
+    # Chart cards — pair them into a two-column grid where possible
+    chart_cards = []
     for title, b64 in charts:
-        html_parts.extend([
-            f'<div class="chart">',
-            f"<h3>{title}</h3>",
-            f'<img src="data:image/png;base64,{b64}" alt="{title}">',
-            "</div>",
-        ])
+        chart_cards.append(
+            f'<div class="chart">\n'
+            f'  <h3>{title}</h3>\n'
+            f'  <img src="data:image/png;base64,{b64}" alt="{title}">\n'
+            f'</div>'
+        )
+    # Wrap consecutive pairs in .chart-grid divs
+    chart_html_parts = []
+    for i in range(0, len(chart_cards), 2):
+        pair = chart_cards[i: i + 2]
+        if len(pair) == 2:
+            chart_html_parts.append(
+                f'<div class="chart-grid">\n' + "\n".join(pair) + "\n</div>"
+            )
+        else:
+            chart_html_parts.append(pair[0])
+    charts_html = "\n".join(chart_html_parts)
 
-    html_parts.extend([
-        "<h2>Data Sample (first 10 rows)</h2>",
-        df.head(10).to_html(index=False),
-        '<div class="disclaimer">',
-        "<strong>Disclaimer:</strong> This tool is for planning purposes only. "
-        "Consult qualified regulatory counsel.",
-        "</div>",
-        "</body>",
-        "</html>",
-    ])
+    sample_table = df.head(10).to_html(index=False, border=0)
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FDA Pathway Predictor — EDA Report</title>
+  <style>
+{css}
+  </style>
+</head>
+<body>
+
+  <div class="report-header">
+    <h1>FDA Regulatory Pathway Predictor</h1>
+    <p class="subtitle">Exploratory Data Analysis Report &mdash; generated from openFDA API data</p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="value">{len(df):,}</div>
+      <div class="label">Total Records</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">{len(df.columns) - 1}</div>
+      <div class="label">Feature Columns</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">{df["pathway"].nunique()}</div>
+      <div class="label">Pathway Classes</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">{top_specialty}</div>
+      <div class="label">Top Specialty</div>
+    </div>
+  </div>
+
+  <h2>Pathway Distribution</h2>
+  <table>
+    <thead><tr><th>Pathway</th><th>Count</th><th>Percentage</th></tr></thead>
+    <tbody>
+{dist_rows}
+    </tbody>
+  </table>
+
+  <h2>Visualizations</h2>
+{charts_html}
+
+  <h2>Data Sample <small style="font-weight:400;font-size:.85rem;">(first 10 rows)</small></h2>
+  <div class="data-sample">
+{sample_table}
+  </div>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong> This tool is for planning purposes only.
+    Consult qualified regulatory counsel before making regulatory decisions.
+  </div>
+
+  <div class="report-footer">
+    Generated by FDA Regulatory Pathway Predictor &bull; openFDA data
+  </div>
+
+</body>
+</html>"""
 
     eda_path = ARTIFACTS_DIR / "eda_report.html"
     with open(eda_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(html_parts))
+        f.write(html)
     logger.info("Saved EDA report → %s", eda_path)
 
     # --- insights.md ---

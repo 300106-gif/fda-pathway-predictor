@@ -1,0 +1,201 @@
+device_name,product_code,device_class,medical_specialty_description,implant_flag,life_sustain_support_flag,pathway
+Glucose Meter,LDY,Class III,Cardiovascular,Y,N,PMA
+Hip Implant,AZD,Class II,General Hospital,N,N,510k
+Coronary Stent,KFW,Class III,Neurology,Y,N,PMA
+Glucose Meter,ULD,Class III,Orthopedic,Y,N,PMA
+Hearing Aid,DMN,Class II,Ophthalmology,N,N,510k
+Infusion Pump,RMA,Class II,Cardiovascular,N,N,De Novo
+Surgical Stapler,SDT,Class III,General Hospital,Y,N,PMA
+Coronary Stent,KTU,Class III,Cardiovascular,Y,Y,PMA
+Insulin Pump,RCH,Class II,General Hospital,N,N,510k
+Insulin Pump,VTP,Class II,Ophthalmology,N,N,510k
+Coronary Stent,DJY,Class II,General Plastic Surgery,N,N,510k
+Hearing Aid,LNG,Class II,Radiology,N,N,De Novo
+Cardiac Monitor,YCW,Class III,Neurology,Y,Y,PMA
+ECG Machine,BII,Class III,Oncology,N,Y,PMA
+Hip Implant,EHP,Class II,Neurology,Y,N,510k
+Defibrillator,DFE,Class II,Oncology,N,N,510k
+Glucose Meter,PVI,Class II,Orthopedic,N,N,510k
+Pulse Oximeter,NBM,Class II,Orthopedic,N,N,510k
+Blood Pressure Monitor,EYK,Class III,Oncology,N,N,PMA
+Cochlear Implant,JCV,Class I,Radiology,Y,N,PMA
+Infusion Pump,YUX,Class II,General Plastic Surgery,N,Y,PMA
+Insulin Pump,QQQ,Class II,Orthopedic,N,N,510k
+Pulse Oximeter,UZW,Class II,Orthopedic,N,N,De Novo
+Insulin Pump,GGB,Class III,Radiology,N,N,PMA
+Cochlear Implant,DIJ,Class III,Oncology,N,N,PMA
+Hearing Aid,ERG,Class II,General Hospital,N,N,510k
+Surgical Stapler,HUI,Class II,Cardiovascular,Y,N,510k
+Coronary Stent,FUO,Class II,Radiology,N,N,510k
+Surgical Stapler,NAF,Class II,General Hospital,N,N,510k
+Glucose Meter,YPQ,Class III,Ophthalmology,Y,N,PMA
+Hip Implant,CSD,Class III,General Plastic Surgery,N,Y,PMA
+Blood Pressure Monitor,LUZ,Class II,Neurology,N,N,De Novo
+Blood Pressure Monitor,UBC,Class II,Oncology,N,N,510k
+Defibrillator,AOM,Class II,Radiology,N,N,510k
+Surgical Stapler,MNM,Class II,Neurology,N,N,510k
+Insulin Pump,UDS,Class II,General Hospital,Y,N,510k
+Pacemaker,CFR,Class II,General Plastic Surgery,N,N,510k
+Pulse Oximeter,QHU,Class II,Radiology,Y,N,510k
+Insulin Pump,JCY,Class II,General Hospital,N,N,510k
+Urinary Catheter,EOY,Class III,Cardiovascular,N,Y,PMA
+Coronary Stent,YQZ,Class II,Cardiovascular,N,N,510k
+Urinary Catheter,HWW,Class III,Ophthalmology,Y,N,PMA
+Hip Implant,QOA,Class III,Orthopedic,Y,Y,PMA
+Defibrillator,ZLI,Class II,Oncology,N,N,510k
+Defibrillator,LOC,Class III,General Plastic Surgery,Y,Y,PMA
+Pulse Oximeter,UVB,Class III,General Plastic Surgery,Y,N,PMA
+Ventilator,CQC,Class II,Radiology,N,N,510k
+Ventilator,LDW,Class II,General Hospital,N,N,510k
+Insulin Pump,UXA,Class III,Radiology,Y,Y,PMA
+Hearing Aid,BZG,Class I,Ophthalmology,N,N,510k
+Hearing Aid,ZYD,Class II,Ophthalmology,N,N,510k
+Blood Pressure Monitor,ULF,Class II,General Hospital,N,N,510k
+Ventilator,OQC,Class III,General Plastic Surgery,Y,Y,PMA
+Surgical Stapler,WAH,Class III,Cardiovascular,Y,N,PMA
+Glucose Meter,NBB,Class III,Neurology,Y,N,PMA
+Pacemaker,KEJ,Class II,Ophthalmology,Y,Y,PMA
+Cochlear Implant,COU,Class II,Orthopedic,Y,N,510k
+Pulse Oximeter,GYO,Class II,Ophthalmology,N,N,510k
+Cochlear Implant,HLY,Class II,General Plastic Surgery,N,N,510k
+Dialysis Machine,XMD,Class II,Radiology,N,N,510k
+Insulin Pump,DPL,Class III,Cardiovascular,N,N,PMA
+Glucose Meter,DKV,Class II,Radiology,N,N,510k
+Urinary Catheter,FHK,Class II,Orthopedic,N,N,510k
+Knee Prosthesis,JOP,Class III,Ophthalmology,N,N,PMA
+Pacemaker,SGU,Class III,General Plastic Surgery,Y,N,PMA
+Cardiac Monitor,NJZ,Class II,Radiology,N,N,510k
+Dialysis Machine,NWN,Class II,Neurology,Y,N,510k
+Dialysis Machine,NVJ,Class II,Orthopedic,N,N,510k
+Knee Prosthesis,MVB,Class II,General Hospital,N,N,510k
+Ventilator,TIB,Class II,Oncology,N,N,510k
+Pacemaker,KJS,Class III,Cardiovascular,N,N,510k
+Cochlear Implant,DNY,Class II,Oncology,N,N,510k
+Ultrasound Probe,URD,Class III,Cardiovascular,Y,N,PMA
+Glucose Meter,SRF,Class II,Oncology,N,N,510k
+Knee Prosthesis,KVX,Class II,General Hospital,N,N,510k
+Infusion Pump,ZQD,Class II,General Hospital,N,Y,510k
+Hearing Aid,VTB,Class II,Orthopedic,N,N,510k
+Surgical Stapler,LGX,Class III,General Plastic Surgery,N,N,PMA
+Surgical Stapler,GZP,Class II,Neurology,N,N,510k
+Ventilator,VVW,Class III,General Plastic Surgery,N,N,PMA
+Insulin Pump,QPB,Class III,Neurology,Y,Y,PMA
+Hip Implant,YVI,Class II,Ophthalmology,N,N,510k
+Defibrillator,MLX,Class III,General Hospital,Y,N,PMA
+Knee Prosthesis,PMW,Class II,Ophthalmology,N,N,510k
+Blood Pressure Monitor,NQQ,Class II,General Plastic Surgery,N,N,510k
+Dialysis Machine,GAP,Class II,General Plastic Surgery,N,N,510k
+Glucose Meter,YOA,Class III,General Hospital,N,N,PMA
+Coronary Stent,SZU,Class II,Orthopedic,N,N,510k
+Urinary Catheter,QNS,Class II,Cardiovascular,N,N,510k
+Hearing Aid,BCN,Class II,General Hospital,N,N,510k
+Hearing Aid,TKZ,Class II,General Hospital,N,N,510k
+Cardiac Monitor,ZTQ,Class III,Orthopedic,N,Y,PMA
+Infusion Pump,JZM,Class II,General Hospital,N,N,510k
+Surgical Stapler,GKB,Class II,Cardiovascular,N,Y,510k
+Urinary Catheter,UGY,Class II,Orthopedic,N,N,510k
+Dialysis Machine,YBJ,Class III,General Hospital,N,N,PMA
+Hip Implant,CAW,Class II,General Plastic Surgery,N,N,510k
+Defibrillator,XGC,Class II,Neurology,N,N,510k
+Hearing Aid,QGR,Class II,General Plastic Surgery,N,N,510k
+Coronary Stent,KGG,Class III,General Plastic Surgery,Y,N,De Novo
+ECG Machine,XHS,Class II,General Hospital,N,N,De Novo
+Glucose Meter,PWE,Class III,Orthopedic,N,Y,PMA
+ECG Machine,LUN,Class II,Oncology,N,N,510k
+ECG Machine,ZDO,Class II,Ophthalmology,N,N,De Novo
+MRI Scanner,BKM,Class III,Cardiovascular,Y,N,PMA
+Glucose Meter,XCB,Class III,Cardiovascular,N,N,PMA
+Pulse Oximeter,ZQW,Class II,Oncology,N,N,510k
+Glucose Meter,INO,Class II,General Hospital,Y,N,510k
+Defibrillator,OIX,Class II,General Hospital,Y,N,510k
+Insulin Pump,XQQ,Class II,General Plastic Surgery,N,N,De Novo
+Ventilator,EEJ,Class II,Ophthalmology,N,N,510k
+Pacemaker,WPU,Class II,Radiology,N,N,510k
+MRI Scanner,PRG,Class II,General Hospital,N,Y,510k
+Surgical Stapler,VEO,Class II,General Plastic Surgery,N,N,510k
+Insulin Pump,UNY,Class II,Orthopedic,N,Y,510k
+Infusion Pump,HBB,Class II,Cardiovascular,Y,N,PMA
+Surgical Stapler,UIB,Class I,General Hospital,Y,N,PMA
+Pacemaker,BXS,Class III,Ophthalmology,N,N,PMA
+Ultrasound Probe,FKD,Class II,General Plastic Surgery,N,N,510k
+Defibrillator,ACN,Class III,Ophthalmology,Y,N,PMA
+Infusion Pump,OUM,Class II,Neurology,N,N,510k
+Pulse Oximeter,VXM,Class III,Cardiovascular,N,N,PMA
+Pulse Oximeter,GYM,Class II,Radiology,N,N,510k
+MRI Scanner,BPB,Class II,Radiology,N,N,510k
+ECG Machine,YEV,Class II,General Plastic Surgery,Y,N,510k
+Ventilator,ACO,Class II,General Hospital,N,N,510k
+Knee Prosthesis,HWN,Class II,General Hospital,N,N,510k
+Infusion Pump,QHG,Class II,Cardiovascular,N,N,510k
+Urinary Catheter,XZC,Class II,Cardiovascular,N,N,510k
+Infusion Pump,JCP,Class II,General Plastic Surgery,N,N,510k
+Dialysis Machine,VCW,Class II,Neurology,N,N,510k
+Infusion Pump,ARS,Class II,Orthopedic,N,N,De Novo
+Pacemaker,DXD,Class II,Orthopedic,N,N,510k
+Cochlear Implant,PBE,Class II,Orthopedic,N,N,510k
+Coronary Stent,YAO,Class II,Ophthalmology,Y,N,510k
+Glucose Meter,ZCW,Class II,General Hospital,N,N,510k
+Hearing Aid,SBL,Class II,Cardiovascular,N,N,De Novo
+Cochlear Implant,PEA,Class II,Orthopedic,N,N,510k
+ECG Machine,VGQ,Class III,Oncology,N,Y,PMA
+Hip Implant,PNS,Class II,General Hospital,N,N,510k
+Urinary Catheter,DKY,Class II,General Hospital,N,Y,510k
+Hip Implant,LKY,Class II,Ophthalmology,N,N,510k
+Ventilator,CMD,Class II,Radiology,N,N,De Novo
+MRI Scanner,XWZ,Class II,Oncology,N,N,510k
+Surgical Stapler,XQW,Class II,Cardiovascular,N,N,510k
+MRI Scanner,QTN,Class II,Orthopedic,N,N,510k
+Surgical Stapler,USW,Class II,General Hospital,N,N,510k
+Dialysis Machine,LTL,Class II,Radiology,N,N,510k
+Ventilator,AYX,Class II,Oncology,N,N,510k
+Surgical Stapler,OPK,Class II,General Hospital,N,N,510k
+Blood Pressure Monitor,KBF,Class III,Radiology,Y,N,PMA
+Pacemaker,IEI,Class III,General Plastic Surgery,N,N,PMA
+Insulin Pump,RFC,Class II,Radiology,Y,N,510k
+Cochlear Implant,MFZ,Class II,Cardiovascular,Y,N,510k
+Insulin Pump,EDB,Class II,Radiology,N,N,510k
+Glucose Meter,RMW,Class III,Neurology,Y,Y,PMA
+Hip Implant,CHW,Class II,Orthopedic,N,N,510k
+Glucose Meter,JYP,Class III,Neurology,Y,Y,PMA
+Hip Implant,BLC,Class III,Radiology,N,N,PMA
+Cochlear Implant,NEC,Class III,General Hospital,Y,N,PMA
+Urinary Catheter,GNT,Class II,General Hospital,N,N,510k
+Hip Implant,CTA,Class II,General Plastic Surgery,N,N,De Novo
+Hip Implant,UGX,Class II,Cardiovascular,Y,N,510k
+Surgical Stapler,QEQ,Class II,Ophthalmology,N,N,510k
+Hip Implant,KDW,Class II,Cardiovascular,N,N,510k
+Cardiac Monitor,SGI,Class II,Oncology,N,N,510k
+Ventilator,GAU,Class III,Radiology,Y,Y,PMA
+Pacemaker,KNV,Class III,General Plastic Surgery,Y,N,PMA
+Insulin Pump,LCM,Class II,Ophthalmology,N,Y,510k
+Insulin Pump,YFE,Class II,Cardiovascular,N,N,De Novo
+Glucose Meter,AIX,Class I,Orthopedic,N,N,510k
+Ventilator,PRE,Class II,Cardiovascular,N,N,510k
+Blood Pressure Monitor,JMV,Class II,Neurology,N,N,510k
+ECG Machine,DYI,Class II,Neurology,N,N,De Novo
+Infusion Pump,QUV,Class II,Radiology,N,N,510k
+Blood Pressure Monitor,FTA,Class II,Cardiovascular,N,N,510k
+Blood Pressure Monitor,KLU,Class II,General Hospital,N,N,510k
+Coronary Stent,DDX,Class II,Orthopedic,N,N,De Novo
+Blood Pressure Monitor,HRR,Class III,Ophthalmology,Y,N,PMA
+Cochlear Implant,POE,Class III,Neurology,Y,N,PMA
+Coronary Stent,ZLH,Class III,Neurology,Y,N,PMA
+Pacemaker,XTR,Class III,Ophthalmology,Y,N,PMA
+Cardiac Monitor,TTK,Class II,Neurology,Y,N,510k
+Urinary Catheter,KSX,Class II,Ophthalmology,N,N,510k
+Coronary Stent,SKM,Class III,Radiology,Y,N,PMA
+Pacemaker,LDR,Class III,Orthopedic,N,Y,PMA
+Pulse Oximeter,UFE,Class II,Cardiovascular,N,N,510k
+Ultrasound Probe,UED,Class II,General Hospital,N,N,510k
+Defibrillator,HRX,Class III,General Plastic Surgery,N,N,PMA
+Blood Pressure Monitor,XTY,Class II,Radiology,N,N,510k
+Coronary Stent,BIS,Class II,General Hospital,N,N,De Novo
+Cardiac Monitor,ZOK,Class II,General Hospital,N,N,510k
+Pulse Oximeter,EYW,Class II,Oncology,N,N,510k
+Hip Implant,WLQ,Class III,Orthopedic,Y,N,PMA
+Hip Implant,YYI,Class II,Oncology,N,N,510k
+Dialysis Machine,VGT,Class II,Ophthalmology,N,N,510k
+Insulin Pump,PQQ,Class II,Oncology,N,N,510k
+Cardiac Monitor,HHF,Class III,Orthopedic,Y,N,PMA
+Hip Implant,JAB,Class II,Neurology,N,N,510k
+Hearing Aid,ISU,Class II,Radiology,N,N,510k

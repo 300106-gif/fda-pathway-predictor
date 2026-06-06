@@ -20,9 +20,8 @@ env/
 # Environment
 .env
 
-# Artifacts (generated at runtime — keep .gitkeep placeholder only)
-artifacts/*
-!artifacts/.gitkeep
+# Artifacts — commit everything except raw API dump (too large)
+artifacts/raw_data.csv
 
 # IDE
 .vscode/

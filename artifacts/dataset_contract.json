@@ -1,0 +1,50 @@
+{
+  "row_count": 200,
+  "columns": [
+    "device_name",
+    "product_code",
+    "device_class",
+    "medical_specialty_description",
+    "implant_flag",
+    "life_sustain_support_flag",
+    "pathway"
+  ],
+  "dtypes": {
+    "device_name": "str",
+    "product_code": "str",
+    "device_class": "str",
+    "medical_specialty_description": "str",
+    "implant_flag": "str",
+    "life_sustain_support_flag": "str",
+    "pathway": "str"
+  },
+  "null_counts": {
+    "device_name": 0,
+    "product_code": 0,
+    "device_class": 0,
+    "medical_specialty_description": 0,
+    "implant_flag": 0,
+    "life_sustain_support_flag": 0,
+    "pathway": 0
+  },
+  "pathway_distribution": {
+    "510k": 123,
+    "PMA": 61,
+    "De Novo": 16
+  },
+  "feature_columns": [
+    "device_name",
+    "product_code",
+    "device_class",
+    "medical_specialty_description",
+    "implant_flag",
+    "life_sustain_support_flag"
+  ],
+  "target_column": "pathway",
+  "target_classes": [
+    "PMA",
+    "510k",
+    "De Novo"
+  ],
+  "source": "synthetic_fallback"
+}
