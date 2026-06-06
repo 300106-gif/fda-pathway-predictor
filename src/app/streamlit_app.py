@@ -51,6 +51,32 @@ CUSTOM_CSS = """
 <style>
 /* ── Global ─────────────────────────────────────────────────────── */
 [data-testid="stAppViewContainer"] { background: #f4f6fb; }
+
+/* Dark navy text + 50% font scale across all main content */
+[data-testid="stMain"] {
+    font-size: 21px !important;
+    color: #1a2744 !important;
+}
+[data-testid="stMain"] p,
+[data-testid="stMain"] span,
+[data-testid="stMain"] li,
+[data-testid="stMain"] label,
+[data-testid="stMain"] div,
+[data-testid="stMain"] td,
+[data-testid="stMain"] th {
+    color: #1a2744 !important;
+}
+[data-testid="stMain"] h1,
+[data-testid="stMain"] h2,
+[data-testid="stMain"] h3,
+[data-testid="stMain"] h4 {
+    color: #0d1b3e !important;
+}
+[data-testid="stMain"] input,
+[data-testid="stMain"] textarea,
+[data-testid="stMain"] select { font-size: 21px !important; color: #1a2744 !important; }
+[data-testid="stMain"] .stCaption,
+[data-testid="stMain"] small   { font-size: 18px !important; color: #2a3f6f !important; }
 [data-testid="stMain"] { padding-top: 0 !important; }
 #MainMenu, footer { visibility: hidden; }
 header[data-testid="stHeader"] { background: transparent; }
@@ -73,7 +99,7 @@ header[data-testid="stHeader"] { background: transparent; }
     border: 1px solid #a89880;
     border-radius: 8px;
     color: #1a2744 !important;
-    font-size: 21px;
+    font-size: 31.5px;
     font-weight: 600;
     text-align: right;
     justify-content: flex-end;
@@ -112,12 +138,12 @@ header[data-testid="stHeader"] { background: transparent; }
     padding: 30px 36px;
     margin-bottom: 28px;
 }
-.page-hero h1 { font-size: 26px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.3px; }
-.page-hero p  { margin: 0; opacity: .88; font-size: 15px; line-height: 1.6; }
+.page-hero h1 { font-size: 39px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.3px; }
+.page-hero p  { margin: 0; opacity: .88; font-size: 22.5px; line-height: 1.6; }
 
 /* ── Section divider ─────────────────────────────────────────────── */
 .section-header {
-    font-size: 15px;
+    font-size: 22.5px;
     font-weight: 700;
     color: #37474f;
     text-transform: uppercase;
@@ -145,11 +171,11 @@ header[data-testid="stHeader"] { background: transparent; }
     height: 100%;
     min-height: 140px;
 }
-.pathway-tile h4 { margin: 0 0 7px; font-size: 15px; font-weight: 700; }
-.pathway-tile p  { margin: 0; font-size: 12.5px; color: #546e7a; line-height: 1.55; }
+.pathway-tile h4 { margin: 0 0 7px; font-size: 22.5px; font-weight: 700; }
+.pathway-tile p  { margin: 0; font-size: 18.8px; color: #546e7a; line-height: 1.55; }
 .pathway-tile .meta {
     margin-top: 10px;
-    font-size: 11.5px;
+    font-size: 17.2px;
     font-weight: 600;
     color: #78909c;
     text-transform: uppercase;
@@ -164,7 +190,7 @@ header[data-testid="stHeader"] { background: transparent; }
     box-shadow: 0 6px 24px rgba(0,0,0,0.10);
 }
 .result-card .rc-eyebrow {
-    font-size: 11px;
+    font-size: 16.5px;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -172,14 +198,14 @@ header[data-testid="stHeader"] { background: transparent; }
     margin-bottom: 4px;
 }
 .result-card .rc-name {
-    font-size: 34px;
+    font-size: 51px;
     font-weight: 800;
     letter-spacing: -0.5px;
     line-height: 1.1;
     margin: 0;
 }
 .result-card .rc-meta {
-    font-size: 12.5px;
+    font-size: 18.8px;
     font-weight: 600;
     opacity: .55;
     margin-top: 8px;
@@ -187,7 +213,7 @@ header[data-testid="stHeader"] { background: transparent; }
     letter-spacing: 0.05em;
 }
 .result-card .rc-desc {
-    font-size: 14.5px;
+    font-size: 21.8px;
     margin-top: 14px;
     line-height: 1.65;
     opacity: .85;
@@ -202,9 +228,9 @@ header[data-testid="stHeader"] { background: transparent; }
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     border: 1px solid #eef0f7;
 }
-.metric-pill .mp-value { font-size: 30px; font-weight: 700; }
+.metric-pill .mp-value { font-size: 45px; font-weight: 700; }
 .metric-pill .mp-label {
-    font-size: 11px;
+    font-size: 16.5px;
     color: #78909c;
     font-weight: 700;
     text-transform: uppercase;
@@ -217,7 +243,7 @@ header[data-testid="stHeader"] { background: transparent; }
 .conf-row {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
+    font-size: 19.5px;
     font-weight: 600;
     margin-bottom: 5px;
 }
@@ -236,7 +262,7 @@ header[data-testid="stHeader"] { background: transparent; }
     border-left: 5px solid #ffc107;
     border-radius: 10px;
     padding: 14px 18px;
-    font-size: 13px;
+    font-size: 19.5px;
     color: #5d4037;
     margin-top: 28px;
     display: flex;
@@ -255,7 +281,7 @@ div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"] {
     font-weight: 700;
     letter-spacing: 0.02em;
     padding: 12px 20px;
-    font-size: 15px;
+    font-size: 22.5px;
 }
 
 /* ── Pathway tile "Learn more" buttons ───────────────────────────── */
@@ -264,7 +290,7 @@ div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"] {
     border: 1px solid #e0e3f0;
     border-radius: 0 0 10px 10px;
     color: #5c6bc0;
-    font-size: 12.5px;
+    font-size: 18.8px;
     font-weight: 600;
     padding: 6px 12px;
     margin-top: -2px;
@@ -750,15 +776,15 @@ def _render_checklist(pathway: str) -> None:
                 st.markdown(
                     f'<div style="display:flex;gap:10px;align-items:flex-start;'
                     f'padding:7px 0;border-bottom:1px solid #f0f2f9;">'
-                    f'<span style="color:{color};font-size:16px;flex-shrink:0;margin-top:1px;">◻</span>'
-                    f'<span style="font-size:14px;line-height:1.5;color:#37474f;">{item}</span>'
+                    f'<span style="color:{color};font-size:24px;flex-shrink:0;margin-top:1px;">◻</span>'
+                    f'<span style="font-size:21px;line-height:1.5;color:#37474f;">{item}</span>'
                     f'</div>',
                     unsafe_allow_html=True,
                 )
 
     st.markdown(
         f'<div style="background:#f8f9ff;border:1px solid #e8eaf6;border-left:4px solid {color};'
-        f'border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#546e7a;">'
+        f'border-radius:8px;padding:12px 16px;margin-top:12px;font-size:19.5px;color:#546e7a;">'
         f'<b>Next step:</b> Review the official FDA guidance for {pathway} submissions and '
         f'request a Pre-Submission (Q-Sub) meeting with CDRH to align your strategy before investing in testing.</div>',
         unsafe_allow_html=True,
@@ -1033,13 +1059,13 @@ def _device_lookup_section() -> None:
 
             st.markdown(
                 f'<div style="background:#f0f4ff;border-left:5px solid {info_color};'
-                f'border-radius:8px;padding:14px 18px;margin-top:8px;font-size:14px;">'
+                f'border-radius:8px;padding:14px 18px;margin-top:8px;font-size:21px;">'
                 f'<b>✅ Selected:</b> {row["DEVICENAME"]} '
                 f'(<code>{row["PRODUCTCODE"]}</code> · {row["REGULATION_NUMBER"]})<br>'
                 f'<span style="color:#546e7a;">Class: <b>{row["Class"]}</b> &nbsp;|&nbsp; '
                 f'Specialty: <b>{row["Specialty"]}</b> &nbsp;|&nbsp; '
                 f'Typical Pathway: <b>{row["Submission"]}</b></span><br>'
-                f'<span style="font-size:12px;color:#78909c;">{row["DEFINITION"][:250]}</span>'
+                f'<span style="font-size:18px;color:#78909c;">{row["DEFINITION"][:250]}</span>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
@@ -1226,14 +1252,14 @@ def page_predictor() -> None:
                                     border-color:{info.get('color','#888')};
                                     color:#1a1f36;padding:20px 22px;">
                             <div class="rc-eyebrow">{cls}</div>
-                            <div class="rc-name" style="font-size:24px;">{info.get('icon','')} {pathway}</div>
+                            <div class="rc-name" style="font-size:36px;">{info.get('icon','')} {pathway}</div>
                             <div class="rc-meta">{info.get('time','')} · Risk: {info.get('risk','')}</div>
-                            <div class="rc-desc" style="font-size:13px;">{info.get('description','')}</div>
+                            <div class="rc-desc" style="font-size:19.5px;">{info.get('description','')}</div>
                         </div>
                         """, unsafe_allow_html=True)
                         st.markdown(f"""
                         <div class="metric-pill" style="margin-top:10px;">
-                            <div class="mp-value" style="color:{info.get('color','#3f51b5')};font-size:22px;">{top_conf:.0%}</div>
+                            <div class="mp-value" style="color:{info.get('color','#3f51b5')};font-size:33px;">{top_conf:.0%}</div>
                             <div class="mp-label">Confidence</div>
                         </div>
                         """, unsafe_allow_html=True)
@@ -1310,7 +1336,7 @@ def page_predictor() -> None:
     # Disclaimer
     st.markdown("""
     <div class="disclaimer">
-        <span style="font-size:20px;flex-shrink:0;">⚠️</span>
+        <span style="font-size:30px;flex-shrink:0;">⚠️</span>
         <span><b>Disclaimer:</b> This tool is for planning and educational purposes only.
         Predictions are based on historical openFDA data patterns and do not constitute
         regulatory advice. Consult qualified regulatory counsel before making any
@@ -1451,7 +1477,7 @@ def page_eda() -> None:
         year_label = selected_year
         with info_col:
             st.markdown(
-                f"<div style='padding-top:28px;color:#546e7a;font-size:13px;'>"
+                f"<div style='padding-top:28px;color:#546e7a;font-size:19.5px;'>"
                 f"Showing <b>{len(df):,}</b> of <b>{len(df_full):,}</b> records</div>",
                 unsafe_allow_html=True,
             )
@@ -1910,9 +1936,9 @@ def page_about() -> None:
         with col:
             st.markdown(f"""
             <div class="card" style="text-align:center;min-height:160px;">
-                <div style="font-size:32px;margin-bottom:8px;">{icon}</div>
-                <div style="font-size:14px;font-weight:700;color:#1a1f36;margin-bottom:6px;">{title}</div>
-                <div style="font-size:13px;color:#546e7a;line-height:1.5;">{desc}</div>
+                <div style="font-size:48px;margin-bottom:8px;">{icon}</div>
+                <div style="font-size:21px;font-weight:700;color:#1a1f36;margin-bottom:6px;">{title}</div>
+                <div style="font-size:19.5px;color:#546e7a;line-height:1.5;">{desc}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -1951,7 +1977,7 @@ def page_about() -> None:
     st.markdown('<div class="section-header">⚠️ Disclaimer</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="disclaimer">
-        <span style="font-size:20px;flex-shrink:0;">⚠️</span>
+        <span style="font-size:30px;flex-shrink:0;">⚠️</span>
         <span>
         <b>For planning and educational purposes only.</b> FDA Pathway Advisor provides
         ML-based estimates derived from historical submission data. It does not constitute
@@ -2012,21 +2038,21 @@ def page_contact() -> None:
         st.markdown('<div class="section-header">📬 Get in Touch</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="card">
-            <div style="font-size:18px;margin-bottom:6px;">📧 Email</div>
+            <div style="font-size:27px;margin-bottom:6px;">📧 Email</div>
             <div style="color:#3f51b5;font-weight:600;">info@fdapathwayadvisor.com</div>
-            <div style="font-size:13px;color:#78909c;margin-top:4px;">We respond within 2 business days</div>
+            <div style="font-size:19.5px;color:#78909c;margin-top:4px;">We respond within 2 business days</div>
         </div>
         <div class="card">
-            <div style="font-size:18px;margin-bottom:6px;">🕐 Office Hours</div>
-            <div style="font-size:13px;color:#546e7a;line-height:1.7;">
+            <div style="font-size:27px;margin-bottom:6px;">🕐 Office Hours</div>
+            <div style="font-size:19.5px;color:#546e7a;line-height:1.7;">
                 Monday – Friday<br>
                 9:00 AM – 5:00 PM ET<br>
                 (Excluding US Federal Holidays)
             </div>
         </div>
         <div class="card">
-            <div style="font-size:18px;margin-bottom:8px;">🔗 Resources</div>
-            <div style="font-size:13px;line-height:2;">
+            <div style="font-size:27px;margin-bottom:8px;">🔗 Resources</div>
+            <div style="font-size:19.5px;line-height:2;">
                 <a href="https://www.fda.gov/medical-devices" target="_blank">FDA Medical Devices Home</a><br>
                 <a href="https://www.fda.gov/patients/learn-about-expanded-access-and-other-treatment-options/contact-fda" target="_blank">Contact FDA Directly</a><br>
                 <a href="https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission" target="_blank">Premarket Submission Guide</a><br>
@@ -2128,11 +2154,11 @@ def page_regulatory_news() -> None:
                 st.markdown(
                     f'<div class="card" style="margin-bottom:12px;padding:18px 22px;">'
                     f'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">'
-                    f'<a href="{link}" target="_blank" style="font-size:15px;font-weight:700;color:#1a1f36;text-decoration:none;line-height:1.4;flex:1;">{title}</a>'
-                    f'<span style="font-size:11px;color:#90a4ae;white-space:nowrap;margin-top:2px;">{date}</span>'
+                    f'<a href="{link}" target="_blank" style="font-size:22.5px;font-weight:700;color:#1a1f36;text-decoration:none;line-height:1.4;flex:1;">{title}</a>'
+                    f'<span style="font-size:16.5px;color:#90a4ae;white-space:nowrap;margin-top:2px;">{date}</span>'
                     f'</div>'
-                    f'<div style="font-size:13px;color:#546e7a;margin-top:8px;line-height:1.55;">{summary_short}</div>'
-                    f'<a href="{link}" target="_blank" style="font-size:12px;color:#3f51b5;font-weight:600;text-decoration:none;margin-top:8px;display:inline-block;">Read on FDA.gov ↗</a>'
+                    f'<div style="font-size:19.5px;color:#546e7a;margin-top:8px;line-height:1.55;">{summary_short}</div>'
+                    f'<a href="{link}" target="_blank" style="font-size:18px;color:#3f51b5;font-weight:600;text-decoration:none;margin-top:8px;display:inline-block;">Read on FDA.gov ↗</a>'
                     f'</div>',
                     unsafe_allow_html=True,
                 )
@@ -2164,10 +2190,10 @@ def main() -> None:
             st.image(str(LOGO_PATH), use_container_width=True)
         st.markdown("""
         <div style="padding:2px 0 18px;">
-            <div style="font-size:15px;font-weight:700;color:#fff;margin:6px 0 2px;line-height:1.3;">
+            <div style="font-size:22.5px;font-weight:700;color:#fff;margin:6px 0 2px;line-height:1.3;">
                 FDA Pathway Advisor
             </div>
-            <div style="font-size:11.5px;color:#7986cb;line-height:1.4;">
+            <div style="font-size:17.2px;color:#7986cb;line-height:1.4;">
                 FDA Pathway Advisor for Medical Devices
             </div>
         </div>
@@ -2175,7 +2201,7 @@ def main() -> None:
         """, unsafe_allow_html=True)
 
         st.markdown(
-            "<div style='font-size:11px;font-weight:700;text-transform:uppercase;"
+            "<div style='font-size:16.5px;font-weight:700;text-transform:uppercase;"
             "letter-spacing:0.08em;color:#5c6bc0;margin-bottom:6px;'>Navigation</div>",
             unsafe_allow_html=True,
         )
@@ -2191,12 +2217,12 @@ def main() -> None:
 
         model_status = "🟢 Model ready" if load_model() else "🔴 Model not found"
         st.markdown(
-            f"<div style='font-size:13px;'>{model_status}</div>",
+            f"<div style='font-size:19.5px;'>{model_status}</div>",
             unsafe_allow_html=True,
         )
 
         st.markdown(
-            "<div style='position:absolute;bottom:24px;font-size:11px;color:#3d4f8c;'>"
+            "<div style='position:absolute;bottom:24px;font-size:16.5px;color:#3d4f8c;'>"
             "Built with CrewAI · scikit-learn · Streamlit</div>",
             unsafe_allow_html=True,
         )
