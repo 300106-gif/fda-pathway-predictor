@@ -24,7 +24,7 @@ import streamlit.components.v1 as components
 logger = logging.getLogger(__name__)
 
 ARTIFACTS_DIR = Path(__file__).parents[2] / "artifacts"
-LOGO_PATH     = Path(__file__).parent / "assets" / "fda-pathway-advisor-logo.png"
+LOGO_PATH     = Path(__file__).parent / "assets" / "regula-logo.png"
 
 # Ensure src/ is importable (needed on Streamlit Cloud)
 _ROOT = Path(__file__).parents[2]
@@ -82,16 +82,60 @@ CUSTOM_CSS = """
 header[data-testid="stHeader"] { background: transparent; }
 [data-testid="stDecoration"] { display: none; }
 
+/* ── Top header (Pantone 2678) ───────────────────────────────────── */
+.top-header {
+    background: #6358CA;
+    padding: 0 32px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(99,88,202,0.25);
+    margin: -1rem -1rem 0 -1rem;
+}
+.top-header-logo  { height: 50px; width: auto; flex-shrink: 0; }
+.top-header-name  { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.3px; line-height: 1.1; }
+.top-header-url   { font-size: 13px; color: rgba(255,255,255,0.72); font-weight: 500; }
+.top-header-spacer { flex: 1; }
+
+/* ── Top nav bar (below header) ──────────────────────────────────── */
+.top-nav-bar { background:#fff; border-bottom:2px solid #e8eaf6; padding:0 24px; margin:0 -1rem 24px -1rem; }
+.top-nav-bar .stButton > button {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    border-bottom: 3px solid transparent !important;
+    color: #1a2744 !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    padding: 14px 16px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    transition: all 0.15s ease !important;
+    white-space: nowrap;
+}
+.top-nav-bar .stButton > button:hover {
+    background: #f4f6fb !important;
+    border-bottom-color: #6358CA !important;
+    color: #6358CA !important;
+}
+.top-nav-bar .stButton > button:focus:not(:active) {
+    background: #f0eefb !important;
+    border-bottom-color: #6358CA !important;
+    color: #6358CA !important;
+    box-shadow: none !important;
+}
+
 /* ── Sidebar ─────────────────────────────────────────────────────── */
 [data-testid="stSidebar"] {
-    background: #1a1f36 !important;
-    border-right: 1px solid #2a3060;
+    background: #ffffff !important;
+    border-right: 1px solid #e8eaf6;
 }
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span,
 [data-testid="stSidebar"] label,
-[data-testid="stSidebar"] div { color: #c5cae9 !important; }
-[data-testid="stSidebar"] .stMarkdown small { color: #5c6bc0 !important; }
+[data-testid="stSidebar"] div { color: #1a2744 !important; }
+[data-testid="stSidebar"] .stMarkdown small { color: #546e7a !important; }
 
 /* Sidebar nav buttons */
 [data-testid="stSidebar"] .stButton > button {
@@ -2194,24 +2238,54 @@ def main() -> None:
     if "page" not in st.session_state:
         st.session_state.page = 0
 
+    # ── Logo as base64 for HTML header ────────────────────────────────────────
+    import base64 as _b64
+    _logo_b64 = _b64.b64encode(LOGO_PATH.read_bytes()).decode() if LOGO_PATH.exists() else ""
+    _logo_tag = (
+        f'<img src="data:image/png;base64,{_logo_b64}" class="top-header-logo">'
+        if _logo_b64 else ""
+    )
+
+    # ── Top header bar: Pantone 2678, white text ────────────────────────────
+    st.markdown(f"""
+    <div class="top-header">
+        {_logo_tag}
+        <div>
+            <div class="top-header-name">FDA Pathway Advisor</div>
+            <div class="top-header-url">regula.com</div>
+        </div>
+        <div class="top-header-spacer"></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Top navigation bar ─────────────────────────────────────────────────
+    st.markdown('<div class="top-nav-bar">', unsafe_allow_html=True)
+    top_cols = st.columns(len(NAV_ITEMS))
+    for i, (col, (icon, label, _)) in enumerate(zip(top_cols, NAV_ITEMS)):
+        with col:
+            if st.button(label, key=f"top_nav_{i}", use_container_width=True):
+                st.session_state.page = i
+                st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # ── Sidebar ────────────────────────────────────────────────────────────
     with st.sidebar:
         if LOGO_PATH.exists():
             st.image(str(LOGO_PATH), use_container_width=True)
         st.markdown("""
-        <div style="padding:2px 0 18px;">
-            <div style="font-size:22.5px;font-weight:700;color:#fff;margin:6px 0 2px;line-height:1.3;">
+        <div style="padding:4px 0 16px;border-bottom:1px solid #e8eaf6;">
+            <div style="font-size:17px;font-weight:700;color:#1a2744;margin:6px 0 2px;">
                 FDA Pathway Advisor
             </div>
-            <div style="font-size:17.2px;color:#7986cb;line-height:1.4;">
+            <div style="font-size:12px;color:#546e7a;">
                 FDA Pathway Advisor for Medical Devices
             </div>
         </div>
-        <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:16px;"></div>
         """, unsafe_allow_html=True)
 
         st.markdown(
-            "<div style='font-size:16.5px;font-weight:700;text-transform:uppercase;"
-            "letter-spacing:0.08em;color:#5c6bc0;margin-bottom:6px;'>Navigation</div>",
+            "<div style='font-size:11px;font-weight:700;text-transform:uppercase;"
+            "letter-spacing:0.08em;color:#9e9e9e;margin:16px 0 6px;'>Navigation</div>",
             unsafe_allow_html=True,
         )
         for i, (icon, label, _) in enumerate(NAV_ITEMS):
@@ -2219,19 +2293,13 @@ def main() -> None:
                 st.session_state.page = i
                 st.rerun()
 
-        st.markdown(
-            "<div style='height:1px;background:rgba(255,255,255,0.08);margin:20px 0 16px;'></div>",
-            unsafe_allow_html=True,
-        )
-
+        st.markdown("<div style='height:1px;background:#e8eaf6;margin:20px 0 12px;'></div>",
+                    unsafe_allow_html=True)
         model_status = "🟢 Model ready" if load_model() else "🔴 Model not found"
+        st.markdown(f"<div style='font-size:13px;color:#546e7a;'>{model_status}</div>",
+                    unsafe_allow_html=True)
         st.markdown(
-            f"<div style='font-size:19.5px;'>{model_status}</div>",
-            unsafe_allow_html=True,
-        )
-
-        st.markdown(
-            "<div style='position:absolute;bottom:24px;font-size:16.5px;color:#3d4f8c;'>"
+            "<div style='position:absolute;bottom:24px;font-size:11px;color:#bdbdbd;'>"
             "Built with CrewAI · scikit-learn · Streamlit</div>",
             unsafe_allow_html=True,
         )
