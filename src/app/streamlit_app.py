@@ -1867,11 +1867,288 @@ def page_api_explorer() -> None:
         """)
 
 
+# ---------------------------------------------------------------------------
+# Page 5 — About
+# ---------------------------------------------------------------------------
+
+def page_about() -> None:
+    st.markdown("""
+    <div class="page-hero">
+        <h1>About FDA Pathway Advisor</h1>
+        <p>An intelligent, ML-powered advisory platform for medical device regulatory strategy.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col_logo, col_intro = st.columns([1, 3], gap="large")
+    with col_logo:
+        if LOGO_PATH.exists():
+            st.image(str(LOGO_PATH), use_container_width=True)
+    with col_intro:
+        st.markdown("""
+        ### What is FDA Pathway Advisor?
+
+        **FDA Pathway Advisor** is a machine-learning platform that helps medical device companies,
+        regulatory consultants, and innovators quickly determine the most appropriate FDA regulatory
+        submission pathway for a new medical device.
+
+        Built on real openFDA submission data, the platform predicts whether a device should pursue
+        **510(k) Clearance**, **Premarket Approval (PMA)**, or **De Novo Classification** —
+        and then provides a detailed, phase-by-phase submission checklist to guide the process.
+        """)
+
+    st.markdown('<div class="section-header">⚙️ How It Works</div>', unsafe_allow_html=True)
+
+    s1, s2, s3, s4 = st.columns(4)
+    steps = [
+        ("🔍", "1. Find Your Device", "Search the FDA classification database (~7,000 device types) to auto-identify your device class and specialty."),
+        ("🤖", "2. ML Prediction", "A scikit-learn classifier trained on historical openFDA submissions predicts the most likely regulatory pathway."),
+        ("🎯", "3. Pathway Result", "Receive a confidence-scored recommendation: 510(k), PMA, or De Novo — with timeline and risk profile."),
+        ("📝", "4. Action Checklist", "Get a 6-phase, detailed submission checklist tailored to your predicted pathway."),
+    ]
+    for col, (icon, title, desc) in zip([s1, s2, s3, s4], steps):
+        with col:
+            st.markdown(f"""
+            <div class="card" style="text-align:center;min-height:160px;">
+                <div style="font-size:32px;margin-bottom:8px;">{icon}</div>
+                <div style="font-size:14px;font-weight:700;color:#1a1f36;margin-bottom:6px;">{title}</div>
+                <div style="font-size:13px;color:#546e7a;line-height:1.5;">{desc}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    st.markdown('<div class="section-header">📊 Data & Model</div>', unsafe_allow_html=True)
+    d1, d2 = st.columns(2)
+    with d1:
+        st.markdown("""
+        **Training Data**
+        - Source: [openFDA Device API](https://open.fda.gov/apis/device/)
+        - Records: real 510(k), PMA, and De Novo submissions
+        - Features: device class, medical specialty, implant flag, life-sustain flag
+        - Labels: submission pathway (510k / PMA / De Novo)
+        - Updated: pipeline can be re-run to refresh data
+
+        **Classification Database**
+        - Source: [FDA foiclass.zip](https://www.fda.gov/medical-devices/classify-your-medical-device/download-product-code-classification-files)
+        - ~7,000 official FDA device types with product codes
+        - Refreshed weekly (FDA updates every Sunday)
+        """)
+    with d2:
+        st.markdown("""
+        **ML Pipeline**
+        - Framework: scikit-learn (Random Forest / Gradient Boosting)
+        - Orchestration: CrewAI multi-agent pipeline
+        - Artifacts: model.pkl, evaluation_report.md, model_card.md
+        - Evaluation: accuracy, F1 per class, confusion matrix
+
+        **Tech Stack**
+        - Frontend: Streamlit
+        - ML: scikit-learn, pandas, numpy
+        - Data: openFDA REST API, FDA foiclass.zip
+        - Orchestration: CrewAI
+        - Deployment: Streamlit Community Cloud
+        """)
+
+    st.markdown('<div class="section-header">⚠️ Disclaimer</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="disclaimer">
+        <span style="font-size:20px;flex-shrink:0;">⚠️</span>
+        <span>
+        <b>For planning and educational purposes only.</b> FDA Pathway Advisor provides
+        ML-based estimates derived from historical submission data. It does not constitute
+        regulatory, legal, or clinical advice. Regulatory pathway determinations depend on
+        device-specific factors that may not be fully captured by this model. Always consult
+        a qualified regulatory affairs professional or submit a Pre-Submission (Q-Sub) request
+        to FDA CDRH before making regulatory decisions.
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# ---------------------------------------------------------------------------
+# Page 6 — Contact Us
+# ---------------------------------------------------------------------------
+
+def page_contact() -> None:
+    st.markdown("""
+    <div class="page-hero">
+        <h1>Contact Us</h1>
+        <p>Questions about the platform, regulatory strategy, or partnership inquiries —
+        we're here to help.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    form_col, info_col = st.columns([3, 2], gap="large")
+
+    with form_col:
+        st.markdown('<div class="section-header">✉️ Send a Message</div>', unsafe_allow_html=True)
+        with st.form("contact_form", clear_on_submit=True):
+            name    = st.text_input("Full Name *", placeholder="Jane Smith")
+            email   = st.text_input("Email Address *", placeholder="jane@company.com")
+            org     = st.text_input("Organization", placeholder="MedTech Co. (optional)")
+            topic   = st.selectbox("Topic", [
+                "General Inquiry",
+                "Regulatory Strategy Question",
+                "Bug Report / Feedback",
+                "Partnership / Integration",
+                "Data / Model Question",
+                "Other",
+            ])
+            message = st.text_area("Message *", placeholder="Describe your question or inquiry…", height=160)
+            submitted = st.form_submit_button("Send Message", type="primary", use_container_width=True)
+
+        if submitted:
+            if not name.strip() or not email.strip() or not message.strip():
+                st.error("Please fill in all required fields (Name, Email, Message).")
+            elif "@" not in email:
+                st.error("Please enter a valid email address.")
+            else:
+                st.success(
+                    f"Thank you, **{name.strip()}**! Your message has been received. "
+                    "We'll respond to **" + email.strip() + "** within 2 business days.",
+                    icon="✅",
+                )
+
+    with info_col:
+        st.markdown('<div class="section-header">📬 Get in Touch</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="card">
+            <div style="font-size:18px;margin-bottom:6px;">📧 Email</div>
+            <div style="color:#3f51b5;font-weight:600;">info@fdapathwayadvisor.com</div>
+            <div style="font-size:13px;color:#78909c;margin-top:4px;">We respond within 2 business days</div>
+        </div>
+        <div class="card">
+            <div style="font-size:18px;margin-bottom:6px;">🕐 Office Hours</div>
+            <div style="font-size:13px;color:#546e7a;line-height:1.7;">
+                Monday – Friday<br>
+                9:00 AM – 5:00 PM ET<br>
+                (Excluding US Federal Holidays)
+            </div>
+        </div>
+        <div class="card">
+            <div style="font-size:18px;margin-bottom:8px;">🔗 Resources</div>
+            <div style="font-size:13px;line-height:2;">
+                <a href="https://www.fda.gov/medical-devices" target="_blank">FDA Medical Devices Home</a><br>
+                <a href="https://www.fda.gov/patients/learn-about-expanded-access-and-other-treatment-options/contact-fda" target="_blank">Contact FDA Directly</a><br>
+                <a href="https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission" target="_blank">Premarket Submission Guide</a><br>
+                <a href="https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm" target="_blank">510(k) Database</a>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+# ---------------------------------------------------------------------------
+# Page 7 — Regulatory News
+# ---------------------------------------------------------------------------
+
+@st.cache_data(ttl=3600, show_spinner=False)   # cache 1 hour
+def _fetch_fda_rss(url: str) -> list[dict]:
+    """Fetch and parse an FDA RSS feed. Returns list of article dicts."""
+    import xml.etree.ElementTree as ET
+    try:
+        import requests as _req
+        resp = _req.get(url, timeout=15, headers={"User-Agent": "FDAPathwayAdvisor/1.0"})
+        resp.raise_for_status()
+        root = ET.fromstring(resp.content)
+        ns = {"media": "http://search.yahoo.com/mrss/"}
+        items = []
+        for item in root.findall(".//item"):
+            def _text(tag):
+                el = item.find(tag)
+                return el.text.strip() if el is not None and el.text else ""
+            items.append({
+                "title":   _text("title"),
+                "link":    _text("link"),
+                "date":    _text("pubDate")[:16] if _text("pubDate") else "",
+                "summary": _text("description"),
+            })
+        return items
+    except Exception:
+        return []
+
+
+_FDA_FEEDS = {
+    "Medical Device News": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/medical-devices/rss.xml",
+    "FDA News Releases":   "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/fda-news-releases/rss.xml",
+    "Recalls & Alerts":    "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/recalls-market-withdrawals-safety-alerts/rss.xml",
+    "MedWatch Safety":     "https://www.fda.gov/safety/medwatch-fda-safety-information-and-adverse-event-reporting-program/rss-feeds-medwatch-safety-alerts/rss.xml",
+}
+
+
+def page_regulatory_news() -> None:
+    st.markdown("""
+    <div class="page-hero">
+        <h1>📰 Regulatory News</h1>
+        <p>Live FDA news feeds — medical device updates, recalls, safety alerts, and news releases.
+        Refreshed every hour directly from FDA.gov.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    feed_tabs = st.tabs(list(_FDA_FEEDS.keys()))
+
+    for tab, (feed_name, feed_url) in zip(feed_tabs, _FDA_FEEDS.items()):
+        with tab:
+            search_q = st.text_input(
+                "Filter articles",
+                placeholder="e.g. 510k, recall, cardiovascular…",
+                key=f"news_search_{feed_name}",
+            )
+
+            with st.spinner(f"Loading {feed_name}…"):
+                articles = _fetch_fda_rss(feed_url)
+
+            if not articles:
+                st.warning(
+                    f"Could not load **{feed_name}** feed. "
+                    "Check your internet connection or try again shortly."
+                )
+                st.markdown(f"[Open feed directly ↗]({feed_url})")
+                continue
+
+            if search_q.strip():
+                q = search_q.strip().lower()
+                articles = [a for a in articles if q in a["title"].lower() or q in a["summary"].lower()]
+
+            if not articles:
+                st.info(f"No articles matched **'{search_q}'**.")
+                continue
+
+            st.caption(f"{len(articles)} article{'s' if len(articles) != 1 else ''} · Source: FDA.gov · Cached 1 hr")
+
+            for article in articles:
+                title   = article["title"]
+                link    = article["link"]
+                date    = article["date"]
+                summary = article["summary"]
+
+                # Strip HTML tags from summary
+                import re
+                summary_clean = re.sub(r"<[^>]+>", "", summary).strip()
+                summary_short = summary_clean[:280] + "…" if len(summary_clean) > 280 else summary_clean
+
+                st.markdown(
+                    f'<div class="card" style="margin-bottom:12px;padding:18px 22px;">'
+                    f'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">'
+                    f'<a href="{link}" target="_blank" style="font-size:15px;font-weight:700;color:#1a1f36;text-decoration:none;line-height:1.4;flex:1;">{title}</a>'
+                    f'<span style="font-size:11px;color:#90a4ae;white-space:nowrap;margin-top:2px;">{date}</span>'
+                    f'</div>'
+                    f'<div style="font-size:13px;color:#546e7a;margin-top:8px;line-height:1.55;">{summary_short}</div>'
+                    f'<a href="{link}" target="_blank" style="font-size:12px;color:#3f51b5;font-weight:600;text-decoration:none;margin-top:8px;display:inline-block;">Read on FDA.gov ↗</a>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+
+# ---------------------------------------------------------------------------
+# Navigation
+# ---------------------------------------------------------------------------
+
 NAV_ITEMS = [
     ("🏥", "Pathway Predictor",  page_predictor),
     ("📊", "EDA Dashboard",      page_eda),
     ("📉", "Model Performance",  page_model_performance),
     ("🔍", "API Explorer",       page_api_explorer),
+    ("📰", "Regulatory News",    page_regulatory_news),
+    ("ℹ️",  "About",              page_about),
+    ("✉️",  "Contact Us",         page_contact),
 ]
 
 
@@ -1883,14 +2160,14 @@ def main() -> None:
 
     with st.sidebar:
         if LOGO_PATH.exists():
-            st.image(str(LOGO_PATH), width=140)
+            st.image(str(LOGO_PATH), use_container_width=True)
         st.markdown("""
         <div style="padding:2px 0 18px;">
-            <div style="font-size:16px;font-weight:700;color:#fff;margin:6px 0 2px;">
+            <div style="font-size:15px;font-weight:700;color:#fff;margin:6px 0 2px;line-height:1.3;">
                 FDA Pathway Advisor
             </div>
-            <div style="font-size:12px;color:#7986cb;">
-                ML-powered regulatory estimation
+            <div style="font-size:11.5px;color:#7986cb;line-height:1.4;">
+                FDA Pathway Advisor for Medical Devices
             </div>
         </div>
         <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:16px;"></div>
