@@ -2251,7 +2251,6 @@ def main() -> None:
     <div class="top-header">
         {_logo_tag}
         <div>
-            <div class="top-header-name">FDA Pathway Advisor</div>
             <div class="top-header-url">regula.com</div>
         </div>
         <div class="top-header-spacer"></div>
