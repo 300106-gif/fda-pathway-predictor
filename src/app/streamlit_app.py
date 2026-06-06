@@ -1,5 +1,5 @@
 """
-FDA Regulatory Pathway Predictor — Streamlit App
+FDA Pathway Advisor — Streamlit App
 
 Three pages:
   1. Pathway Predictor  — enter device details, get pathway + confidence
@@ -24,6 +24,7 @@ import streamlit.components.v1 as components
 logger = logging.getLogger(__name__)
 
 ARTIFACTS_DIR = Path(__file__).parents[2] / "artifacts"
+LOGO_PATH     = Path(__file__).parent / "assets" / "fda-pathway-advisor-logo.png"
 
 # Ensure src/ is importable (needed on Streamlit Cloud)
 _ROOT = Path(__file__).parents[2]
@@ -33,9 +34,12 @@ if str(_ROOT) not in sys.path:
 # ---------------------------------------------------------------------------
 # Page config
 # ---------------------------------------------------------------------------
+from PIL import Image as _PILImage
+_logo_img = _PILImage.open(LOGO_PATH) if LOGO_PATH.exists() else None
+
 st.set_page_config(
-    page_title="FDA Pathway Predictor",
-    page_icon="🏥",
+    page_title="FDA Pathway Advisor",
+    page_icon=_logo_img if _logo_img else "🏥",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -1067,7 +1071,7 @@ def _render_confidence_bars(class_probs: dict) -> None:
 def page_predictor() -> None:
     st.markdown("""
     <div class="page-hero">
-        <h1>🏥 FDA Regulatory Pathway Predictor</h1>
+        <h1>FDA Pathway Advisor</h1>
         <p>Enter your medical device characteristics to receive an ML-powered estimate
         of the most appropriate FDA regulatory submission pathway.</p>
     </div>
@@ -1417,7 +1421,7 @@ def _eda_charts(df: pd.DataFrame, year_label: str) -> None:
 def page_eda() -> None:
     st.markdown("""
     <div class="page-hero">
-        <h1>📊 EDA Dashboard</h1>
+        <h1>📊 EDA Dashboard — FDA Pathway Advisor</h1>
         <p>Exploratory data analysis of the openFDA training dataset.
         Use the year filter to drill into a specific decision year.</p>
     </div>
@@ -1551,7 +1555,7 @@ def page_eda() -> None:
 def page_model_performance() -> None:
     st.markdown("""
     <div class="page-hero">
-        <h1>📉 Model Performance</h1>
+        <h1>📉 Model Performance — FDA Pathway Advisor</h1>
         <p>Full evaluation metrics, confusion matrix, and model documentation
         for the trained FDA pathway classifier.</p>
     </div>
@@ -1689,7 +1693,7 @@ _SEARCH_SYNTAX = """
 def page_api_explorer() -> None:
     st.markdown("""
     <div class="page-hero">
-        <h1>🔍 API Search Reference</h1>
+        <h1>🔍 API Search Reference — FDA Pathway Advisor</h1>
         <p>All searchable openFDA fields for each device endpoint — with a live query builder
         to construct and preview API calls directly against the openFDA API.</p>
     </div>
@@ -1878,11 +1882,12 @@ def main() -> None:
         st.session_state.page = 0
 
     with st.sidebar:
+        if LOGO_PATH.exists():
+            st.image(str(LOGO_PATH), width=140)
         st.markdown("""
-        <div style="padding:4px 0 22px;">
-            <div style="font-size:36px;line-height:1;">🏥</div>
-            <div style="font-size:16px;font-weight:700;color:#fff;margin:8px 0 2px;">
-                FDA Pathway Predictor
+        <div style="padding:2px 0 18px;">
+            <div style="font-size:16px;font-weight:700;color:#fff;margin:6px 0 2px;">
+                FDA Pathway Advisor
             </div>
             <div style="font-size:12px;color:#7986cb;">
                 ML-powered regulatory estimation
