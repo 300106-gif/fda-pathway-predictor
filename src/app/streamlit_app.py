@@ -84,18 +84,18 @@ header[data-testid="stHeader"] { background: transparent; }
 
 /* ── Top header (Pantone 2678) ───────────────────────────────────── */
 .top-header {
-    background: #6358CA;
+    background: transparent;
     padding: 0 32px;
     height: 72px;
     display: flex;
     align-items: center;
     gap: 16px;
-    box-shadow: 0 2px 12px rgba(99,88,202,0.25);
+    box-shadow: none;
     margin: -1rem -1rem 0 -1rem;
 }
 .top-header-logo  { height: 50px; width: auto; flex-shrink: 0; }
-.top-header-name  { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.3px; line-height: 1.1; }
-.top-header-url   { font-size: 13px; color: rgba(255,255,255,0.72); font-weight: 500; }
+.top-header-name  { font-size: 22px; font-weight: 800; color: #1a2744; letter-spacing: -0.3px; line-height: 1.1; }
+.top-header-url   { font-size: 13px; color: #546e7a; font-weight: 500; }
 .top-header-spacer { flex: 1; }
 
 /* ── Top nav bar (below header) ──────────────────────────────────── */
