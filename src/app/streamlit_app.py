@@ -98,7 +98,7 @@ header[data-testid="stHeader"] { background: transparent; }
     background: #c4b5a5;
     border: 1px solid #a89880;
     border-radius: 8px;
-    color: #1a2744 !important;
+    color: #0d1b3e !important;
     font-size: 31.5px;
     font-weight: 600;
     text-align: right;
@@ -108,15 +108,24 @@ header[data-testid="stHeader"] { background: transparent; }
     width: 100%;
     margin: 3px 0;
 }
-[data-testid="stSidebar"] .stButton > button:hover {
+/* Force navy on all child elements inside the button */
+[data-testid="stSidebar"] .stButton > button *,
+[data-testid="stSidebar"] .stButton > button p,
+[data-testid="stSidebar"] .stButton > button span,
+[data-testid="stSidebar"] .stButton > button div {
+    color: #0d1b3e !important;
+}
+[data-testid="stSidebar"] .stButton > button:hover,
+[data-testid="stSidebar"] .stButton > button:hover * {
     background: #a89880 !important;
     border-color: #8a7860;
-    color: #0d1933 !important;
+    color: #0d1b3e !important;
 }
-[data-testid="stSidebar"] .stButton > button:focus:not(:active) {
+[data-testid="stSidebar"] .stButton > button:focus:not(:active),
+[data-testid="stSidebar"] .stButton > button:focus:not(:active) * {
     background: #9a8870 !important;
     border-color: #7a6850;
-    color: #0d1933 !important;
+    color: #0d1b3e !important;
     box-shadow: none;
 }
 
