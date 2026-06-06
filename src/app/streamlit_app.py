@@ -390,6 +390,283 @@ PATHWAY_INFO = {
 
 
 # ---------------------------------------------------------------------------
+# Downstream submission checklists — shown after a prediction
+# ---------------------------------------------------------------------------
+
+PATHWAY_CHECKLISTS: dict[str, list[dict]] = {
+    "510k": [
+        {
+            "phase": "1 · Pre-Submission",
+            "icon": "📋",
+            "items": [
+                "Identify and document a legally marketed predicate device (same intended use)",
+                "Confirm device is Class II (or reclassified Class III with 510k history)",
+                "Request an FDA Pre-Sub meeting (Q-Sub) to align on testing strategy",
+                "Draft the Substantial Equivalence (SE) comparison table",
+                "Identify applicable FDA guidance documents and recognized standards",
+                "Review CDRH's iRASC database for recent 510(k) decisions in your product code",
+            ],
+        },
+        {
+            "phase": "2 · Technical Documentation",
+            "icon": "🔬",
+            "items": [
+                "Device description — intended use, indications for use, design specs",
+                "Predicate comparison — side-by-side table of technological characteristics",
+                "Substantial equivalence argument — why differences don't raise new Q&A issues",
+                "Performance testing — bench, biocompatibility (ISO 10993), EMC, software (if applicable)",
+                "Sterilization validation (if device is sterile)",
+                "Shelf-life / packaging testing",
+                "Software documentation per FDA SW guidance (if SiMD or SaMD)",
+                "Cybersecurity documentation (if network-connected)",
+            ],
+        },
+        {
+            "phase": "3 · Labeling",
+            "icon": "🏷️",
+            "items": [
+                "Draft labeling in FDA final format (21 CFR Part 801)",
+                "Include device name, intended use, indications, contraindications, warnings",
+                "Directions for use / Instructions for Use (IFU)",
+                "Ensure labeling matches the predicate's intended use scope",
+                "Prepare 510(k) Summary OR 510(k) Statement (one required)",
+            ],
+        },
+        {
+            "phase": "4 · Submission Package",
+            "icon": "📦",
+            "items": [
+                "Cover letter with CDRH contact info and submission type",
+                "Table of contents (eCopy format per FDA guidance)",
+                "Device description section",
+                "Predicate comparison & SE argument section",
+                "Performance testing reports",
+                "Labeling (draft)",
+                "510(k) Summary or Statement",
+                "Pay user fee (check current MDUFA fee schedule)",
+                "Submit via FDA eSubmitter or CDRH Customer Collaboration Portal",
+            ],
+        },
+        {
+            "phase": "5 · FDA Review (90–180 days)",
+            "icon": "⏳",
+            "items": [
+                "Respond promptly to Additional Information (AI) requests — typically 90-day clock",
+                "Track submission status on FDA's 510(k) database",
+                "Prepare for Interactive Review requests (voluntary pilot)",
+                "Engage FDA reviewer via teleconference if questions arise",
+            ],
+        },
+        {
+            "phase": "6 · Post-Clearance",
+            "icon": "✅",
+            "items": [
+                "Register establishment and list device in FDA FURLS (within 30 days)",
+                "Implement Quality System Regulation (QSR / 21 CFR Part 820) — MDR reporting",
+                "File Medical Device Reports (MDRs) for any reportable adverse events",
+                "Submit a new 510(k) before making significant changes to design, labeling, or manufacturing",
+                "Maintain complaint files and CAPA records",
+            ],
+        },
+    ],
+    "PMA": [
+        {
+            "phase": "1 · Early Planning",
+            "icon": "🗺️",
+            "items": [
+                "Confirm device requires PMA (Class III, life-sustaining, or no predicate)",
+                "Request Breakthrough Device Designation if eligible (for faster interaction)",
+                "Schedule Pre-Submission (Q-Sub) meeting to discuss clinical study design",
+                "Review existing Advisory Committee meeting transcripts for your device type",
+                "Engage a Regulatory Affairs consultant with PMA experience",
+                "Develop an IDE (Investigational Device Exemption) application if clinical trials needed",
+            ],
+        },
+        {
+            "phase": "2 · Investigational Device Exemption (IDE)",
+            "icon": "🧪",
+            "items": [
+                "Prepare IDE application — device description, investigational plan, risk analysis",
+                "Obtain IRB approval at each clinical site",
+                "Submit IDE to FDA and await approval before initiating pivotal studies",
+                "Conduct Feasibility study (if needed) under IDE",
+                "Design pivotal clinical trial with primary and secondary endpoints",
+                "Power calculations and statistical analysis plan (SAP)",
+            ],
+        },
+        {
+            "phase": "3 · Clinical & Non-Clinical Studies",
+            "icon": "🏥",
+            "items": [
+                "Biocompatibility testing per ISO 10993 series",
+                "Sterilization validation (ISO 11135 / 11137 as applicable)",
+                "Electrical safety and EMC testing (IEC 60601 series)",
+                "Software verification & validation per IEC 62304 / FDA SW guidance",
+                "Animal studies (if required) under IACUC approval",
+                "Pivotal clinical investigation — GCP-compliant, FDA-registered sites",
+                "Compile Clinical Study Report (CSR)",
+            ],
+        },
+        {
+            "phase": "4 · PMA Module Assembly",
+            "icon": "📦",
+            "items": [
+                "Administrative section — applicant info, device description, table of contents",
+                "Summary of Safety and Effectiveness Data (SSED) — public document",
+                "Non-clinical studies section",
+                "Clinical investigations section with CSR",
+                "Manufacturing information — facility info, QS documentation, process validation",
+                "Proposed labeling in final format",
+                "References and bibliography",
+                "Pay PMA user fee (significantly higher than 510(k))",
+            ],
+        },
+        {
+            "phase": "5 · FDA Review (180-day statutory goal)",
+            "icon": "⏳",
+            "items": [
+                "Prepare for Major Deficiency Letter — respond within FDA-specified timeframe",
+                "Prepare for Advisory Panel meeting (public — prepare slides and Q&A)",
+                "Respond to all panel questions and FDA information requests",
+                "Negotiate any approval conditions (labeling changes, post-approval studies)",
+                "Track status on FDA's PMA database",
+            ],
+        },
+        {
+            "phase": "6 · Post-Approval",
+            "icon": "✅",
+            "items": [
+                "Complete any Post-Approval Studies (PAS) committed to FDA",
+                "Register establishment and list device within 30 days of approval",
+                "File Annual PMA Reports (30-day window each year)",
+                "Submit PMA Supplements for any changes to design, manufacturing, or labeling",
+                "Implement MDR (Medical Device Reporting) program — 5-day, 15-day, 30-day reports",
+                "Maintain full QSR / 21 CFR 820 compliance — FDA inspections possible",
+            ],
+        },
+    ],
+    "De Novo": [
+        {
+            "phase": "1 · Eligibility Determination",
+            "icon": "🔍",
+            "items": [
+                "Confirm device is novel — no legally marketed predicate device exists",
+                "Confirm device is low-to-moderate risk (Class I or II level)",
+                "Determine entry path: Direct De Novo OR Post-NSE De Novo (after 510(k) refusal)",
+                "Request a Pre-Submission (Q-Sub) meeting with CDRH to confirm De Novo eligibility",
+                "Identify or propose a new device type name and three-letter product code",
+                "Review existing De Novo orders in CDRH database for similar device types",
+            ],
+        },
+        {
+            "phase": "2 · Risk Analysis & Special Controls Proposal",
+            "icon": "⚖️",
+            "items": [
+                "Conduct comprehensive risk analysis (ISO 14971) — identify all hazards",
+                "Propose Special Controls that mitigate each identified risk",
+                "Draft General Controls and Special Controls framework for the new device type",
+                "Prepare risk/benefit analysis demonstrating low-to-moderate residual risk",
+                "Propose classification regulation language (similar to 21 CFR Part 870–892 format)",
+            ],
+        },
+        {
+            "phase": "3 · Technical Documentation",
+            "icon": "🔬",
+            "items": [
+                "Device description — intended use, indications, design specifications, principles of operation",
+                "Performance testing supporting the special controls proposal",
+                "Biocompatibility (ISO 10993) if in contact with patient",
+                "Software documentation if SiMD/SaMD (FDA SW guidance + IEC 62304)",
+                "Cybersecurity documentation if network-connected",
+                "Sterilization validation (if sterile device)",
+                "Labeling compliant with proposed special controls",
+            ],
+        },
+        {
+            "phase": "4 · De Novo Request Package",
+            "icon": "📦",
+            "items": [
+                "Cover letter with device description and proposed classification",
+                "Table of contents",
+                "De Novo summary — risk/benefit, special controls, proposed classification",
+                "Performance testing reports",
+                "Full technical documentation",
+                "Draft proposed labeling",
+                "Draft classification regulation language",
+                "Pay De Novo user fee (check current MDUFA schedule)",
+                "Submit via FDA eSubmitter or Customer Collaboration Portal",
+            ],
+        },
+        {
+            "phase": "5 · FDA Review (150-day statutory goal)",
+            "icon": "⏳",
+            "items": [
+                "Respond to FDA's Additional Information (AI) requests promptly",
+                "Negotiate Special Controls language with FDA reviewer",
+                "Negotiate proposed classification regulation text",
+                "Track status via CDRH Customer Collaboration Portal",
+            ],
+        },
+        {
+            "phase": "6 · Post-Grant",
+            "icon": "✅",
+            "items": [
+                "De Novo order is published — your device type becomes a predicate for future 510(k)s",
+                "Register establishment and list device in FDA FURLS within 30 days",
+                "Implement QSR / 21 CFR Part 820 quality system",
+                "File MDRs for any reportable adverse events",
+                "Submit a new 510(k) for future device modifications (device now has a predicate)",
+                "Monitor any mandatory Post-Market Surveillance studies committed to FDA",
+            ],
+        },
+    ],
+}
+
+
+def _render_checklist(pathway: str) -> None:
+    """Render the submission checklist for the predicted pathway."""
+    checklist = PATHWAY_CHECKLISTS.get(pathway)
+    if not checklist:
+        return
+
+    info = PATHWAY_INFO.get(pathway, {})
+    color = info.get("color", "#3f51b5")
+
+    st.markdown(
+        f'<div class="section-header">📝 Submission Checklist — {info.get("icon","")} {pathway}</div>',
+        unsafe_allow_html=True,
+    )
+    st.caption(
+        "Use this as a high-level planning guide. Each phase should be confirmed "
+        "against the latest FDA guidance documents and your specific device's requirements."
+    )
+
+    for phase_data in checklist:
+        phase_icon = phase_data["icon"]
+        phase_name = phase_data["phase"]
+        items = phase_data["items"]
+
+        with st.expander(f"{phase_icon} {phase_name}", expanded=False):
+            for item in items:
+                st.markdown(
+                    f'<div style="display:flex;gap:10px;align-items:flex-start;'
+                    f'padding:7px 0;border-bottom:1px solid #f0f2f9;">'
+                    f'<span style="color:{color};font-size:16px;flex-shrink:0;margin-top:1px;">◻</span>'
+                    f'<span style="font-size:14px;line-height:1.5;color:#37474f;">{item}</span>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+    st.markdown(
+        f'<div style="background:#f8f9ff;border:1px solid #e8eaf6;border-left:4px solid {color};'
+        f'border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#546e7a;">'
+        f'<b>Next step:</b> Review the official FDA guidance for {pathway} submissions and '
+        f'request a Pre-Submission (Q-Sub) meeting with CDRH to align your strategy before investing in testing.</div>',
+        unsafe_allow_html=True,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Pathway detail dialogs
 # ---------------------------------------------------------------------------
 
@@ -733,6 +1010,9 @@ def page_predictor() -> None:
                     use_container_width=True,
                     hide_index=True,
                 )
+
+            st.markdown("<br>", unsafe_allow_html=True)
+            _render_checklist(predicted_pathway)
 
         except Exception as exc:
             st.error(f"Prediction failed: {exc}")
