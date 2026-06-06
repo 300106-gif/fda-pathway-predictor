@@ -336,6 +336,72 @@ def read_json(name: str) -> dict | None:
     return None
 
 
+# ---------------------------------------------------------------------------
+# FDA Product Code Classification Database (foiclass.zip)
+# Updated every Sunday by FDA: https://www.fda.gov/medical-devices/classify-your-medical-device/download-product-code-classification-files
+# ---------------------------------------------------------------------------
+
+_FOICLASS_URL = "https://www.accessdata.fda.gov/premarket/ftparea/foiclass.zip"
+
+# Pipe-delimited columns in known order (no header in file)
+_FOICLASS_COLS = [
+    "REVIEW_PANEL", "MEDICALSPECIALTY", "PRODUCTCODE", "DEVICENAME",
+    "DEVICECLASS", "UNCLASSIFIED_REASON", "GMP_EXEMPT_FLAG",
+    "THIRD_PARTY_FLAG", "REVIEW_CODE", "REGULATION_NUMBER",
+    "SUBMISSION_TYPE_ID", "DEFINITION", "PHYSICALSTATE",
+    "TECHNICALMETHOD", "TARGET_AREA",
+]
+
+_SPECIALTY_CODE_MAP = {
+    "AN": "Anesthesiology",       "CV": "Cardiovascular",
+    "CH": "Clinical Chemistry",   "DE": "Dental",
+    "EN": "Ear, Nose, Throat",    "GU": "Gastroenterology, Urology",
+    "HO": "General Hospital",     "HE": "Hematology",
+    "IM": "Immunology",           "MG": "Medical Genetics",
+    "MI": "Microbiology",         "NE": "Neurology",
+    "OB": "Obstetrics/Gynecology","OP": "Ophthalmic",
+    "OR": "Orthopedic",           "PA": "Pathology",
+    "PM": "Physical Medicine",    "RA": "Radiology",
+    "SU": "General, Plastic Surgery", "TX": "Clinical Toxicology",
+}
+
+_CLASS_CODE_MAP = {
+    "1": "Class I", "2": "Class II", "3": "Class III",
+    "f": "Class I", "F": "Class I", "U": "Not Sure",
+}
+
+_SUBMISSION_CODE_MAP = {
+    "1": "PMA", "2": "510(k)", "3": "PDP",
+    "4": "PMA Supplement", "5": "Pre-submission", "6": "De Novo",
+}
+
+
+@st.cache_data(ttl=7 * 24 * 3600, show_spinner=False)
+def _load_fda_classification_db() -> pd.DataFrame | None:
+    """Download and parse foiclass.zip — cached 7 days (FDA updates weekly)."""
+    import io
+    import zipfile
+    import requests as _req
+    try:
+        resp = _req.get(_FOICLASS_URL, timeout=30)
+        resp.raise_for_status()
+        with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
+            raw = z.open(z.namelist()[0]).read().decode("latin-1")
+        lines = [l for l in raw.splitlines() if l.strip()]
+        rows  = [l.split("|") for l in lines]
+        n     = max(len(r) for r in rows)
+        cols  = _FOICLASS_COLS[:n] + [f"extra_{i}" for i in range(n - len(_FOICLASS_COLS))]
+        rows  = [r + [""] * (n - len(r)) for r in rows]   # pad short rows
+        df = pd.DataFrame(rows, columns=cols)
+        df = df.apply(lambda s: s.str.strip() if s.dtype == object else s)
+        df["Class"]      = df["DEVICECLASS"].map(_CLASS_CODE_MAP).fillna("Not Sure")
+        df["Specialty"]  = df["MEDICALSPECIALTY"].map(_SPECIALTY_CODE_MAP).fillna("Other")
+        df["Submission"] = df["SUBMISSION_TYPE_ID"].map(_SUBMISSION_CODE_MAP).fillna("Unknown")
+        return df
+    except Exception:
+        return None
+
+
 MEDICAL_SPECIALTIES = [
     "Anesthesiology",
     "Cardiovascular",
@@ -853,6 +919,127 @@ _PATHWAY_DIALOGS = {
 }
 
 
+def _device_lookup_section() -> None:
+    """Search FDA classification DB and pre-fill form fields via session state."""
+    with st.expander("🔍 Look Up Your Device in the FDA Classification Database", expanded=True):
+        st.caption(
+            "Search the official FDA product code database (foiclass.zip, updated weekly) "
+            "to automatically fill in device class, specialty, and properties."
+        )
+
+        load_col, _ = st.columns([3, 2])
+        with load_col:
+            query = st.text_input(
+                "Search by device name, product code, or keyword",
+                placeholder="e.g. IV labeling, catheter, glucose monitor, K203487…",
+                key="fda_class_search",
+            )
+
+        if not query.strip():
+            st.info("Type a device name or product code above to search ~7,000 FDA device types.", icon="💡")
+            return
+
+        with st.spinner("Searching FDA classification database…"):
+            df_cls = _load_fda_classification_db()
+
+        if df_cls is None:
+            st.error(
+                "Could not load FDA classification database. "
+                "Check your internet connection and try again."
+            )
+            return
+
+        q = query.strip().lower()
+        mask = (
+            df_cls["DEVICENAME"].str.lower().str.contains(q, na=False)
+            | df_cls["PRODUCTCODE"].str.lower().str.contains(q, na=False)
+            | df_cls["DEFINITION"].str.lower().str.contains(q, na=False)
+        )
+        hits = df_cls[mask].copy()
+
+        if hits.empty:
+            st.warning(
+                f"No FDA device types matched **'{query}'**. "
+                "Try a broader term (e.g. 'label' instead of 'IV labeling system')."
+            )
+            return
+
+        hits = hits.head(50)
+        st.markdown(
+            f"**{len(hits)} result{'s' if len(hits) != 1 else ''}** — "
+            "click a row to auto-fill the form below.",
+        )
+
+        display = hits[[
+            "PRODUCTCODE", "DEVICENAME", "Class", "Specialty",
+            "Submission", "REGULATION_NUMBER", "DEFINITION",
+        ]].rename(columns={
+            "PRODUCTCODE":        "Code",
+            "DEVICENAME":         "Device Type",
+            "REGULATION_NUMBER":  "Regulation",
+            "DEFINITION":         "Definition",
+        })
+
+        event = st.dataframe(
+            display,
+            use_container_width=True,
+            hide_index=True,
+            on_select="rerun",
+            selection_mode="single-row",
+            column_config={
+                "Code":       st.column_config.TextColumn(width="small"),
+                "Device Type":st.column_config.TextColumn(width="large"),
+                "Class":      st.column_config.TextColumn(width="small"),
+                "Specialty":  st.column_config.TextColumn(width="medium"),
+                "Submission": st.column_config.TextColumn(width="medium"),
+                "Regulation": st.column_config.TextColumn(width="medium"),
+                "Definition": st.column_config.TextColumn(width="large"),
+            },
+        )
+
+        sel_rows = event.selection.rows if hasattr(event, "selection") else []
+        if sel_rows:
+            row = hits.iloc[sel_rows[0]]
+
+            # Determine implant / life-sustain from extra columns if present
+            implant_val    = False
+            life_sust_val  = False
+            for col in df_cls.columns:
+                val = str(row.get(col, "")).upper()
+                if "IMPLANT" in col.upper() and val == "Y":
+                    implant_val = True
+                if "LIFE" in col.upper() and val == "Y":
+                    life_sust_val = True
+
+            # Map specialty — ensure it's in our dropdown list
+            specialty_val = row["Specialty"] if row["Specialty"] in MEDICAL_SPECIALTIES else "Other"
+
+            # Write prefill values into session state
+            st.session_state["_prefill_class"]    = row["Class"]
+            st.session_state["_prefill_specialty"] = specialty_val
+            st.session_state["_prefill_implant"]   = implant_val
+            st.session_state["_prefill_life"]      = life_sust_val
+            st.session_state["_prefill_name"]      = row["DEVICENAME"].title()
+
+            info_color = PATHWAY_INFO.get(
+                {"510(k)": "510k", "PMA": "PMA", "De Novo": "De Novo"}.get(row["Submission"], ""), {}
+            ).get("color", "#3f51b5")
+
+            st.markdown(
+                f'<div style="background:#f0f4ff;border-left:5px solid {info_color};'
+                f'border-radius:8px;padding:14px 18px;margin-top:8px;font-size:14px;">'
+                f'<b>✅ Selected:</b> {row["DEVICENAME"]} '
+                f'(<code>{row["PRODUCTCODE"]}</code> · {row["REGULATION_NUMBER"]})<br>'
+                f'<span style="color:#546e7a;">Class: <b>{row["Class"]}</b> &nbsp;|&nbsp; '
+                f'Specialty: <b>{row["Specialty"]}</b> &nbsp;|&nbsp; '
+                f'Typical Pathway: <b>{row["Submission"]}</b></span><br>'
+                f'<span style="font-size:12px;color:#78909c;">{row["DEFINITION"][:250]}</span>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+            st.success("Form fields auto-filled below — review and click **Predict Pathway**.", icon="⬇️")
+
+
 def _render_confidence_bars(class_probs: dict) -> None:
     sorted_probs = sorted(class_probs.items(), key=lambda x: x[1], reverse=True)
     html = ""
@@ -914,22 +1101,37 @@ def page_predictor() -> None:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ── Input form ──
-    st.markdown('<div class="section-header">🔬 Device Characteristics</div>', unsafe_allow_html=True)
+    # ── FDA Classification Lookup ──
+    st.markdown('<div class="section-header">🔍 Step 1 — Find Your Device Type</div>', unsafe_allow_html=True)
+    _device_lookup_section()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Input form (reads prefill values from session state) ──
+    st.markdown('<div class="section-header">🔬 Step 2 — Confirm Details & Predict</div>', unsafe_allow_html=True)
+
+    _pf_class     = st.session_state.get("_prefill_class", "Not Sure")
+    _pf_specialty = st.session_state.get("_prefill_specialty", MEDICAL_SPECIALTIES[0])
+    _pf_implant   = st.session_state.get("_prefill_implant", False)
+    _pf_life      = st.session_state.get("_prefill_life", False)
+    _pf_name      = st.session_state.get("_prefill_name", "")
 
     col_form, col_flags = st.columns([3, 2], gap="large")
 
     with col_form:
         device_name = st.text_input(
             "Device Name",
-            placeholder="e.g. Cardiac Monitor, Hip Implant, Glucose Meter…",
+            value=_pf_name,
+            placeholder="e.g. Cardiac Monitor, Hip Implant, IV Labeling System…",
             help="Enter the commercial or generic name of your medical device.",
         )
         c1, c2 = st.columns(2)
         with c1:
-            device_class = st.selectbox("Device Class", DEVICE_CLASSES, index=0)
+            cls_idx = DEVICE_CLASSES.index(_pf_class) if _pf_class in DEVICE_CLASSES else 0
+            device_class = st.selectbox("Device Class", DEVICE_CLASSES, index=cls_idx)
         with c2:
-            medical_specialty = st.selectbox("Medical Specialty", MEDICAL_SPECIALTIES)
+            spec_idx = MEDICAL_SPECIALTIES.index(_pf_specialty) if _pf_specialty in MEDICAL_SPECIALTIES else 0
+            medical_specialty = st.selectbox("Medical Specialty", MEDICAL_SPECIALTIES, index=spec_idx)
         if device_class == "Not Sure":
             st.info(CLASS_DESCRIPTIONS["Not Sure"], icon="❓")
         else:
@@ -937,9 +1139,9 @@ def page_predictor() -> None:
 
     with col_flags:
         st.markdown("**Device Properties**")
-        implant_flag      = st.toggle("Implantable Device",
+        implant_flag      = st.toggle("Implantable Device", value=_pf_implant,
                                       help="Device is intended to be surgically implanted in the body.")
-        life_sustain_flag = st.toggle("Life-Sustaining / Life-Supporting",
+        life_sustain_flag = st.toggle("Life-Sustaining / Life-Supporting", value=_pf_life,
                                       help="Device sustains or supports human life.")
         st.markdown("<br>", unsafe_allow_html=True)
         predict_btn = st.button("⚡ Predict Pathway", type="primary", use_container_width=True)
