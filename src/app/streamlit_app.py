@@ -1507,7 +1507,7 @@ def _eda_charts(df: pd.DataFrame, year_label: str) -> None:
 def page_eda() -> None:
     st.markdown("""
     <div class="page-hero">
-        <h1>📊 EDA Dashboard — FDA Pathway Advisor</h1>
+        <h1>EDA Dashboard</h1>
         <p>Exploratory data analysis of the openFDA training dataset.
         Use the year filter to drill into a specific decision year.</p>
     </div>
@@ -1641,7 +1641,7 @@ def page_eda() -> None:
 def page_model_performance() -> None:
     st.markdown("""
     <div class="page-hero">
-        <h1>📉 Model Performance — FDA Pathway Advisor</h1>
+        <h1>Model Performance</h1>
         <p>Full evaluation metrics, confusion matrix, and model documentation
         for the trained FDA pathway classifier.</p>
     </div>
@@ -1779,7 +1779,7 @@ _SEARCH_SYNTAX = """
 def page_api_explorer() -> None:
     st.markdown("""
     <div class="page-hero">
-        <h1>🔍 API Search Reference — FDA Pathway Advisor</h1>
+        <h1>API Search Reference</h1>
         <p>All searchable openFDA fields for each device endpoint — with a live query builder
         to construct and preview API calls directly against the openFDA API.</p>
     </div>
@@ -2162,7 +2162,7 @@ _FDA_FEEDS = {
 def page_regulatory_news() -> None:
     st.markdown("""
     <div class="page-hero">
-        <h1>📰 Regulatory News</h1>
+        <h1>Regulatory News</h1>
         <p>Live FDA news feeds — medical device updates, recalls, safety alerts, and news releases.
         Refreshed every hour directly from FDA.gov.</p>
     </div>
