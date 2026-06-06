@@ -1,50 +1,105 @@
 {
-  "row_count": 200,
+  "row_count": 2999,
   "columns": [
     "device_name",
     "product_code",
     "device_class",
     "medical_specialty_description",
+    "decision_code",
+    "decision_date",
     "implant_flag",
     "life_sustain_support_flag",
-    "pathway"
+    "k_number",
+    "source",
+    "pathway",
+    "decision_year"
   ],
   "dtypes": {
     "device_name": "str",
     "product_code": "str",
     "device_class": "str",
     "medical_specialty_description": "str",
+    "decision_code": "str",
+    "decision_date": "str",
     "implant_flag": "str",
     "life_sustain_support_flag": "str",
-    "pathway": "str"
+    "k_number": "str",
+    "source": "str",
+    "pathway": "str",
+    "decision_year": "int64"
   },
   "null_counts": {
     "device_name": 0,
     "product_code": 0,
     "device_class": 0,
     "medical_specialty_description": 0,
+    "decision_code": 0,
+    "decision_date": 0,
     "implant_flag": 0,
     "life_sustain_support_flag": 0,
-    "pathway": 0
+    "k_number": 0,
+    "source": 0,
+    "pathway": 0,
+    "decision_year": 0
   },
   "pathway_distribution": {
-    "510k": 123,
-    "PMA": 61,
-    "De Novo": 16
+    "510k": 1999,
+    "PMA": 999,
+    "De Novo": 1
   },
   "feature_columns": [
     "device_name",
     "product_code",
     "device_class",
     "medical_specialty_description",
+    "decision_code",
+    "decision_date",
     "implant_flag",
-    "life_sustain_support_flag"
+    "life_sustain_support_flag",
+    "k_number",
+    "source",
+    "decision_year"
   ],
   "target_column": "pathway",
   "target_classes": [
-    "PMA",
     "510k",
-    "De Novo"
+    "De Novo",
+    "PMA"
   ],
-  "source": "synthetic_fallback"
+  "value_ranges": {
+    "device_name": {
+      "unique_count": 2908
+    },
+    "product_code": {
+      "unique_count": 1067
+    },
+    "device_class": {
+      "unique_count": 2
+    },
+    "medical_specialty_description": {
+      "unique_count": 19
+    },
+    "decision_code": {
+      "unique_count": 14
+    },
+    "decision_date": {
+      "unique_count": 2533
+    },
+    "implant_flag": {
+      "unique_count": 1
+    },
+    "life_sustain_support_flag": {
+      "unique_count": 1
+    },
+    "k_number": {
+      "unique_count": 2001
+    },
+    "source": {
+      "unique_count": 2
+    },
+    "decision_year": {
+      "unique_count": 52
+    }
+  },
+  "source": "openfda_api"
 }

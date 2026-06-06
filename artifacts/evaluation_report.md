@@ -11,12 +11,12 @@
 ```
               precision    recall  f1-score   support
 
-        510k       1.00      1.00      1.00       406
-         PMA       1.00      1.00      1.00       185
+        510k       1.00      1.00      1.00       412
+         PMA       1.00      1.00      1.00       188
 
-    accuracy                           1.00       591
-   macro avg       1.00      1.00      1.00       591
-weighted avg       1.00      1.00      1.00       591
+    accuracy                           1.00       600
+   macro avg       1.00      1.00      1.00       600
+weighted avg       1.00      1.00      1.00       600
 
 ```
 
@@ -27,27 +27,28 @@ weighted avg       1.00      1.00      1.00       591
 ```
               precision    recall  f1-score   support
 
-        510k       1.00      1.00      1.00       406
-         PMA       1.00      1.00      1.00       185
+        510k       1.00      1.00      1.00       412
+         PMA       1.00      1.00      1.00       188
 
-    accuracy                           1.00       591
-   macro avg       1.00      1.00      1.00       591
-weighted avg       1.00      1.00      1.00       591
+    accuracy                           1.00       600
+   macro avg       1.00      1.00      1.00       600
+weighted avg       1.00      1.00      1.00       600
 
 ```
 
 ## LogisticRegression
-**Macro F1:** `1.0000`
+**Macro F1:** `0.3333`
 
 **Full Classification Report:**
 ```
               precision    recall  f1-score   support
 
-        510k       1.00      1.00      1.00       406
-         PMA       1.00      1.00      1.00       185
+        510k       0.00      0.00      0.00       412
+     De Novo       0.00      0.00      0.00         0
+         PMA       1.00      1.00      1.00       188
 
-    accuracy                           1.00       591
-   macro avg       1.00      1.00      1.00       591
-weighted avg       1.00      1.00      1.00       591
+    accuracy                           0.31       600
+   macro avg       0.33      0.33      0.33       600
+weighted avg       0.31      0.31      0.31       600
 
 ```

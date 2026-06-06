@@ -67,6 +67,17 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     if "device_class" in df.columns:
         df["device_class"] = df["device_class"].apply(_normalize_device_class)
 
+    # Decision date — parse YYYYMMDD or YYYY-MM-DD → extract year as int
+    if "decision_date" in df.columns:
+        def _parse_year(val: str) -> int | None:
+            v = str(val).strip().replace("-", "")
+            if len(v) >= 4 and v[:4].isdigit():
+                return int(v[:4])
+            return None
+        df["decision_year"] = df["decision_date"].apply(_parse_year)
+    else:
+        df["decision_year"] = None
+
     # Binary flags — coerce to Y/N
     for col in ["implant_flag", "life_sustain_support_flag"]:
         if col in df.columns:

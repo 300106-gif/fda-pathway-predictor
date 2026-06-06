@@ -754,63 +754,219 @@ def page_predictor() -> None:
 # Page 2 — EDA Dashboard
 # ---------------------------------------------------------------------------
 
+@st.cache_data(show_spinner=False)
+def _load_clean_df() -> pd.DataFrame | None:
+    path = ARTIFACTS_DIR / "clean_data.csv"
+    if not path.exists():
+        return None
+    return pd.read_csv(path)
+
+
+def _eda_charts(df: pd.DataFrame, year_label: str) -> None:
+    """Render inline EDA charts for a (possibly filtered) dataframe."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    PATHWAY_COLORS = {
+        "510k":     "#1976D2",
+        "PMA":      "#C62828",
+        "De Novo":  "#2E7D32",
+    }
+
+    def pathway_color_list(index):
+        return [PATHWAY_COLORS.get(p, "#888") for p in index]
+
+    c1, c2 = st.columns(2)
+
+    # ── Chart 1: Pathway distribution ──
+    with c1:
+        counts = df["pathway"].value_counts()
+        fig, ax = plt.subplots(figsize=(5, 3.5))
+        bars = ax.bar(counts.index, counts.values,
+                      color=pathway_color_list(counts.index), edgecolor="white", linewidth=1.2)
+        ax.set_title(f"Pathway Distribution — {year_label}", fontsize=12, fontweight="bold")
+        ax.set_ylabel("Count")
+        for bar, v in zip(bars, counts.values):
+            ax.text(bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + max(counts.values) * 0.01,
+                    str(v), ha="center", fontweight="bold", fontsize=10)
+        ax.spines[["top", "right"]].set_visible(False)
+        plt.tight_layout()
+        st.pyplot(fig, use_container_width=True)
+        plt.close(fig)
+
+    # ── Chart 2: Device class vs pathway ──
+    with c2:
+        if "device_class" in df.columns:
+            ct = pd.crosstab(df["device_class"], df["pathway"])
+            fig, ax = plt.subplots(figsize=(5, 3.5))
+            ct.plot(kind="bar", ax=ax,
+                    color=[PATHWAY_COLORS.get(c, "#888") for c in ct.columns],
+                    edgecolor="white", linewidth=1.2)
+            ax.set_title(f"Device Class vs Pathway — {year_label}", fontsize=12, fontweight="bold")
+            ax.set_xlabel("")
+            ax.set_ylabel("Count")
+            ax.legend(title="Pathway", fontsize=9)
+            ax.spines[["top", "right"]].set_visible(False)
+            plt.xticks(rotation=20, ha="right")
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
+            plt.close(fig)
+
+    c3, c4 = st.columns(2)
+
+    # ── Chart 3: Top medical specialties ──
+    with c3:
+        if "medical_specialty_description" in df.columns:
+            top = df["medical_specialty_description"].value_counts().head(8)
+            fig, ax = plt.subplots(figsize=(5, 3.5))
+            palette = sns.color_palette("husl", len(top))
+            ax.barh(top.index[::-1], top.values[::-1], color=palette[::-1])
+            ax.set_title(f"Top Specialties — {year_label}", fontsize=12, fontweight="bold")
+            ax.set_xlabel("Count")
+            ax.spines[["top", "right"]].set_visible(False)
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
+            plt.close(fig)
+
+    # ── Chart 4: Implant flag vs pathway ──
+    with c4:
+        if "implant_flag" in df.columns:
+            ct2 = pd.crosstab(df["implant_flag"], df["pathway"])
+            fig, ax = plt.subplots(figsize=(5, 3.5))
+            ct2.plot(kind="bar", ax=ax,
+                     color=[PATHWAY_COLORS.get(c, "#888") for c in ct2.columns],
+                     edgecolor="white", linewidth=1.2)
+            ax.set_title(f"Implant Flag vs Pathway — {year_label}", fontsize=12, fontweight="bold")
+            ax.set_xlabel("")
+            ax.set_ylabel("Count")
+            ax.legend(title="Pathway", fontsize=9)
+            ax.spines[["top", "right"]].set_visible(False)
+            plt.xticks(rotation=0)
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
+            plt.close(fig)
+
+
 def page_eda() -> None:
     st.markdown("""
     <div class="page-hero">
         <h1>📊 EDA Dashboard</h1>
-        <p>Exploratory data analysis of the openFDA training dataset
-        used to build the classification model.</p>
+        <p>Exploratory data analysis of the openFDA training dataset.
+        Use the year filter to drill into a specific decision year.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    tab1, tab2, tab3 = st.tabs(["📈 EDA Report", "💡 Key Insights", "📋 Dataset Contract"])
+    df_full = _load_clean_df()
+    if df_full is None:
+        st.warning("clean_data.csv not found. Run the pipeline first.")
+        return
 
+    # ── Year filter ──
+    has_year = "decision_year" in df_full.columns and df_full["decision_year"].notna().any()
+
+    if has_year:
+        years_available = sorted(df_full["decision_year"].dropna().astype(int).unique(), reverse=True)
+        filter_col, info_col = st.columns([2, 5])
+        with filter_col:
+            selected_year = st.selectbox(
+                "Filter by Decision Year",
+                ["All years"] + [str(y) for y in years_available],
+                key="eda_year",
+            )
+        df = df_full if selected_year == "All years" else df_full[
+            df_full["decision_year"] == int(selected_year)
+        ]
+        year_label = selected_year
+        with info_col:
+            st.markdown(
+                f"<div style='padding-top:28px;color:#546e7a;font-size:13px;'>"
+                f"Showing <b>{len(df):,}</b> of <b>{len(df_full):,}</b> records</div>",
+                unsafe_allow_html=True,
+            )
+        if len(df) == 0:
+            st.warning(f"No records found for {selected_year}.")
+            return
+    else:
+        df = df_full
+        year_label = "All years"
+        st.info(
+            "No decision year data found in the current dataset. "
+            "Re-run the pipeline to fetch real openFDA records with date fields.",
+            icon="ℹ️",
+        )
+
+    st.markdown("---")
+
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "📈 Charts", "📋 Distribution", "💡 Insights", "🗂 Dataset Contract"
+    ])
+
+    # ── Tab 1 — Dynamic charts ──
     with tab1:
-        if artifact_exists("eda_report.html"):
-            html_content = (ARTIFACTS_DIR / "eda_report.html").read_text(encoding="utf-8")
-            components.html(html_content, height=900, scrolling=True)
-        else:
-            st.warning("eda_report.html not found. Run the pipeline first.")
+        _eda_charts(df, year_label)
 
+    # ── Tab 2 — Distribution table ──
     with tab2:
+        counts = df["pathway"].value_counts()
+        total = len(df)
+
+        m1, m2, m3, m4 = st.columns(4)
+        pills = [
+            (f"{total:,}", "Total Records", "#3f51b5"),
+            (str(counts.get("510k", 0)), "510(k)", "#1976D2"),
+            (str(counts.get("PMA", 0)), "PMA", "#C62828"),
+            (str(counts.get("De Novo", 0)), "De Novo", "#2E7D32"),
+        ]
+        for col, (val, label, color) in zip([m1, m2, m3, m4], pills):
+            with col:
+                st.markdown(f"""
+                <div class="metric-pill">
+                    <div class="mp-value" style="color:{color}">{val}</div>
+                    <div class="mp-label">{label}</div>
+                </div>""", unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        dist_col, class_col = st.columns(2)
+        with dist_col:
+            st.markdown("**Pathway Distribution**")
+            dist_df = pd.DataFrame([
+                {"Pathway": k, "Count": v, "Share": f"{100*v/total:.1f}%"}
+                for k, v in counts.items()
+            ])
+            st.dataframe(dist_df, use_container_width=True, hide_index=True)
+
+        with class_col:
+            st.markdown("**Device Class Breakdown**")
+            if "device_class" in df.columns:
+                class_counts = df["device_class"].value_counts()
+                class_df = pd.DataFrame([
+                    {"Class": k, "Count": v, "Share": f"{100*v/total:.1f}%"}
+                    for k, v in class_counts.items()
+                ])
+                st.dataframe(class_df, use_container_width=True, hide_index=True)
+
+        if "medical_specialty_description" in df.columns:
+            st.markdown("**Top Medical Specialties**")
+            spec_counts = df["medical_specialty_description"].value_counts().head(10)
+            spec_df = pd.DataFrame([
+                {"Specialty": k, "Count": v, "Share": f"{100*v/total:.1f}%"}
+                for k, v in spec_counts.items()
+            ])
+            st.dataframe(spec_df, use_container_width=True, hide_index=True)
+
+    # ── Tab 3 — Insights (static) ──
+    with tab3:
         st.markdown(read_text("insights.md"))
 
-    with tab3:
+    # ── Tab 4 — Dataset Contract ──
+    with tab4:
         contract = read_json("dataset_contract.json")
         if contract:
-            m1, m2, m3 = st.columns(3)
-            with m1:
-                row_count = contract.get("row_count", "N/A")
-                formatted = f"{row_count:,}" if isinstance(row_count, int) else row_count
-                st.markdown(f"""
-                <div class="metric-pill">
-                    <div class="mp-value" style="color:#3f51b5">{formatted}</div>
-                    <div class="mp-label">Total Records</div>
-                </div>""", unsafe_allow_html=True)
-            with m2:
-                st.markdown(f"""
-                <div class="metric-pill">
-                    <div class="mp-value" style="color:#3f51b5">{len(contract.get('feature_columns', []))}</div>
-                    <div class="mp-label">Feature Columns</div>
-                </div>""", unsafe_allow_html=True)
-            with m3:
-                st.markdown(f"""
-                <div class="metric-pill">
-                    <div class="mp-value" style="color:#3f51b5">{len(contract.get('target_classes', []))}</div>
-                    <div class="mp-label">Target Classes</div>
-                </div>""", unsafe_allow_html=True)
-
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.markdown("#### Pathway Distribution")
-            dist = contract.get("pathway_distribution", {})
-            if dist:
-                total = sum(dist.values())
-                dist_df = pd.DataFrame([
-                    {"Pathway": k, "Count": v, "Share": f"{100*v/total:.1f}%"}
-                    for k, v in dist.items()
-                ])
-                st.dataframe(dist_df, use_container_width=True, hide_index=True)
-
+            st.markdown("*The dataset contract reflects the full dataset from the last pipeline run.*")
             st.markdown("#### Column Details")
             dtypes = contract.get("dtypes", {})
             nulls  = contract.get("null_counts", {})

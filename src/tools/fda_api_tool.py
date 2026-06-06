@@ -132,6 +132,7 @@ def build_raw_dataframe() -> pd.DataFrame:
                 "medical_specialty_description", ""
             ),
             "decision_code": r.get("decision_code", ""),
+            "decision_date": r.get("decision_date", ""),
             "implant_flag": r.get("implant_flag", "N"),
             "life_sustain_support_flag": r.get("life_sustain_support_flag", "N"),
             "k_number": k_number,
@@ -155,6 +156,7 @@ def build_raw_dataframe() -> pd.DataFrame:
                 r.get("medical_specialty_description", ""),
             ),
             "decision_code": r.get("decision_code", ""),
+            "decision_date": r.get("decision_date", ""),
             "implant_flag": r.get("implant_flag", "N"),
             "life_sustain_support_flag": r.get("life_sustain_support_flag", "N"),
             "k_number": "",
