@@ -66,7 +66,13 @@ CUSTOM_CSS = """
 [data-testid="stMain"] th {
     color: #1a2744 !important;
 }
-[data-testid="stMain"] h1,
+[data-testid="stMain"] h1 {
+    color: #0d1b3e !important;
+    background-color: rgb(27, 56, 105) !important;
+    color: #ffffff !important;
+    padding: 12px 20px;
+    border-radius: 8px;
+}
 [data-testid="stMain"] h2,
 [data-testid="stMain"] h3,
 [data-testid="stMain"] h4 {
