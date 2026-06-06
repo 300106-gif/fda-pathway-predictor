@@ -252,6 +252,24 @@ div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"] {
     padding: 12px 20px;
     font-size: 15px;
 }
+
+/* ── Pathway tile "Learn more" buttons ───────────────────────────── */
+[data-testid="stHorizontalBlock"] .stButton > button[kind="secondary"] {
+    background: transparent;
+    border: 1px solid #e0e3f0;
+    border-radius: 0 0 10px 10px;
+    color: #5c6bc0;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    margin-top: -2px;
+    transition: all 0.15s ease;
+}
+[data-testid="stHorizontalBlock"] .stButton > button[kind="secondary"]:hover {
+    background: #eef0fb;
+    border-color: #5c6bc0;
+    color: #3f51b5;
+}
 </style>
 """
 
@@ -371,6 +389,165 @@ PATHWAY_INFO = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Pathway detail dialogs
+# ---------------------------------------------------------------------------
+
+@st.dialog("🔵 510(k) Clearance — Full Details", width="large")
+def _dialog_510k() -> None:
+    st.markdown("""
+    **510(k) Clearance** is the most common FDA premarket submission pathway.
+    You must demonstrate that your device is **substantially equivalent** to a legally
+    marketed predicate device — same intended use and same/different technology
+    that does not raise new safety or effectiveness questions.
+
+    ---
+    #### When to use 510(k)
+    - Device is Class II (moderate risk)
+    - A legally marketed predicate device exists
+    - Device does not have a new intended use
+    - Any new technology does not raise different safety/effectiveness questions
+
+    ---
+    #### Required elements
+    | Element | Details |
+    |---------|---------|
+    | Device description | Intended use, indications, technical specs |
+    | Predicate comparison | Side-by-side comparison table |
+    | Performance testing | Bench, animal, or clinical data as appropriate |
+    | Labeling | Draft labeling in final format |
+    | 510(k) summary or statement | Public-facing summary of SE decision |
+
+    ---
+    #### Typical timeline
+    | Phase | Duration |
+    |-------|----------|
+    | Preparation | 3–12 months |
+    | FDA review (standard) | 90 days |
+    | FDA review (complex) | Up to 180 days |
+    | **Total** | **3–18 months** |
+
+    ---
+    #### Key decision codes
+    | Code | Meaning |
+    |------|---------|
+    | `SESE` | Substantially Equivalent — Cleared |
+    | `NSUB` | Not Substantially Equivalent — Not Cleared |
+    | `DENO` | De Novo Pathway Granted |
+    | `WTDR` | Withdrawn |
+    """)
+    st.link_button(
+        "Open Official FDA 510(k) Guidance",
+        "https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission/premarket-notification-510k",
+        use_container_width=True,
+    )
+
+
+@st.dialog("🔴 Premarket Approval (PMA) — Full Details", width="large")
+def _dialog_pma() -> None:
+    st.markdown("""
+    **Premarket Approval (PMA)** is the most rigorous FDA device review pathway.
+    Required for Class III devices — those that **support or sustain human life**,
+    are implanted, or present a potential unreasonable risk of illness or injury.
+
+    ---
+    #### When to use PMA
+    - Device is Class III (high risk)
+    - Device is life-sustaining or life-supporting
+    - Device is implanted and presents unreasonable risk
+    - No 510(k) predicate exists and De Novo is not appropriate
+
+    ---
+    #### Required elements
+    | Element | Details |
+    |---------|---------|
+    | Clinical data | Valid scientific evidence from clinical investigations |
+    | Non-clinical studies | Bench, animal, biocompatibility testing |
+    | Manufacturing information | Full quality system documentation |
+    | Device description | Complete technical specifications |
+    | Proposed labeling | Final labeling in FDA format |
+    | Summary of safety & effectiveness | Public-facing SSED document |
+
+    ---
+    #### Typical timeline
+    | Phase | Duration |
+    |-------|----------|
+    | Pre-submission meetings | 3–6 months |
+    | Clinical trials | 1–4 years |
+    | FDA review | 180 days (statutory goal) |
+    | **Total** | **2–7 years** |
+
+    ---
+    #### Key decision codes
+    | Code | Meaning |
+    |------|---------|
+    | `APPR` | Approved |
+    | `APRL` | Approved with conditions |
+    | `DENY` | Denied |
+    | `WTDR` | Withdrawn |
+    """)
+    st.link_button(
+        "Open Official FDA PMA Guidance",
+        "https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission/premarket-approval-pma",
+        use_container_width=True,
+    )
+
+
+@st.dialog("🟢 De Novo Classification — Full Details", width="large")
+def _dialog_de_novo() -> None:
+    st.markdown("""
+    **De Novo** is a risk-based classification pathway for **novel, low-to-moderate risk devices**
+    that have no legally marketed predicate. It establishes a new device type and
+    can itself become a predicate for future 510(k) submissions.
+
+    ---
+    #### When to use De Novo
+    - Device is novel — no legally marketed predicate exists
+    - Device is Class I or Class II risk level (not high risk)
+    - An NSE determination was received after a 510(k) submission
+    - Device uses new technology with a new intended use
+
+    ---
+    #### Required elements
+    | Element | Details |
+    |---------|---------|
+    | Device description | Full technical description and intended use |
+    | Classification proposal | Proposed device type name and product code |
+    | Special controls proposal | Proposed mitigations for identified risks |
+    | Performance testing | Evidence supporting low/moderate risk |
+    | Risk analysis | Complete risk/benefit analysis |
+    | Draft labeling | Final labeling reflecting special controls |
+
+    ---
+    #### Typical timeline
+    | Phase | Duration |
+    |-------|----------|
+    | Preparation | 6–18 months |
+    | FDA review | 150 days (statutory goal) |
+    | Negotiation of special controls | Variable |
+    | **Total** | **12–24 months** |
+
+    ---
+    #### Two entry paths
+    | Path | Description |
+    |------|-------------|
+    | Direct De Novo | Submit De Novo request without a prior 510(k) |
+    | Post-NSE De Novo | Submit after receiving a Not Substantially Equivalent 510(k) decision |
+    """)
+    st.link_button(
+        "Open Official FDA De Novo Guidance",
+        "https://www.fda.gov/medical-devices/premarket-submissions-selecting-and-preparing-correct-submission/de-novo-classification-request",
+        use_container_width=True,
+    )
+
+
+_PATHWAY_DIALOGS = {
+    "510k":    _dialog_510k,
+    "PMA":     _dialog_pma,
+    "De Novo": _dialog_de_novo,
+}
+
+
 def _render_confidence_bars(class_probs: dict) -> None:
     sorted_probs = sorted(class_probs.items(), key=lambda x: x[1], reverse=True)
     html = ""
@@ -423,6 +600,12 @@ def page_predictor() -> None:
                 <div class="meta">⏱ {info['time']} &nbsp;|&nbsp; ⚠️ Risk: {info['risk']}</div>
             </div>
             """, unsafe_allow_html=True)
+            if st.button(
+                "Learn more",
+                key=f"tile_more_{key}",
+                use_container_width=True,
+            ):
+                _PATHWAY_DIALOGS[key]()
 
     st.markdown("<br>", unsafe_allow_html=True)
 
