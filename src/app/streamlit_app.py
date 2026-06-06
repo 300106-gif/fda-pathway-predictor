@@ -337,8 +337,27 @@ def read_json(name: str) -> dict | None:
 
 
 MEDICAL_SPECIALTIES = [
-    "Cardiovascular", "Dental", "General Hospital", "General Plastic Surgery",
-    "Neurology", "Oncology", "Ophthalmology", "Orthopedic", "Radiology", "Other",
+    "Anesthesiology",
+    "Cardiovascular",
+    "Clinical Chemistry",
+    "Clinical Toxicology",
+    "Dental",
+    "Ear, Nose, Throat",
+    "Gastroenterology, Urology",
+    "General Hospital",
+    "General, Plastic Surgery",
+    "Hematology",
+    "Immunology",
+    "Medical Genetics",
+    "Microbiology",
+    "Neurology",
+    "Obstetrics/Gynecology",
+    "Ophthalmic",
+    "Orthopedic",
+    "Pathology",
+    "Physical Medicine",
+    "Radiology",
+    "Other",
 ]
 
 DEVICE_CLASSES = ["Class I", "Class II", "Class III"]
