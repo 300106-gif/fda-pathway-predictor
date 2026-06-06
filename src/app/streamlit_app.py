@@ -360,13 +360,22 @@ MEDICAL_SPECIALTIES = [
     "Other",
 ]
 
-DEVICE_CLASSES = ["Class I", "Class II", "Class III"]
+DEVICE_CLASSES = ["Not Sure", "Class I", "Class II", "Class III"]
 
 CLASS_DESCRIPTIONS = {
+    "Not Sure":  "Select if you don't know your device's class yet. We'll show predictions for all three classes.",
     "Class I":   "Low risk — general controls only (e.g. bandages, tongue depressors).",
     "Class II":  "Moderate risk — special controls + 510(k) (e.g. infusion pumps, X-ray systems).",
     "Class III": "High risk — PMA required (e.g. pacemakers, implantable defibrillators).",
 }
+
+CLASS_LOOKUP_HINT = """
+**How to find your device class:**
+1. Search the [FDA Product Classification Database](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfPCD/classification.cfm) by device name or product code
+2. Search cleared 510(k)s for similar devices at [510(k) Database](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm)
+3. Look up your CFR regulation number (21 CFR Part 862–892)
+4. Request a **Pre-Submission (Q-Sub)** meeting with FDA CDRH for an official determination
+"""
 
 PATHWAY_INFO = {
     "510k": {
@@ -918,10 +927,13 @@ def page_predictor() -> None:
         )
         c1, c2 = st.columns(2)
         with c1:
-            device_class = st.selectbox("Device Class", DEVICE_CLASSES, index=1)
+            device_class = st.selectbox("Device Class", DEVICE_CLASSES, index=0)
         with c2:
             medical_specialty = st.selectbox("Medical Specialty", MEDICAL_SPECIALTIES)
-        st.caption(f"ℹ️ {CLASS_DESCRIPTIONS.get(device_class, '')}")
+        if device_class == "Not Sure":
+            st.info(CLASS_DESCRIPTIONS["Not Sure"], icon="❓")
+        else:
+            st.caption(f"ℹ️ {CLASS_DESCRIPTIONS.get(device_class, '')}")
 
     with col_flags:
         st.markdown("**Device Properties**")
@@ -942,7 +954,7 @@ def page_predictor() -> None:
         import numpy as np
         from sklearn.preprocessing import LabelEncoder
 
-        model       = model_payload["model"]
+        model        = model_payload["model"]
         feature_cols = model_payload["feature_cols"]
         le_target: LabelEncoder = model_payload["label_encoder"]
 
@@ -953,85 +965,135 @@ def page_predictor() -> None:
                 le_class = LabelEncoder().fit(df_train["device_class"].astype(str))
                 le_spec  = LabelEncoder().fit(df_train["medical_specialty_description"].astype(str))
             else:
-                le_class = LabelEncoder().fit(DEVICE_CLASSES + ["Unknown"])
+                le_class = LabelEncoder().fit(["Class I", "Class II", "Class III", "Unknown"])
                 le_spec  = LabelEncoder().fit(MEDICAL_SPECIALTIES)
 
             def safe_transform(le, value):
                 return int(le.transform([value])[0]) if value in le.classes_ else 0
 
-            features = []
-            if "device_class_enc" in feature_cols:
-                features.append(safe_transform(le_class, device_class))
-            if "medical_specialty_description_enc" in feature_cols:
-                features.append(safe_transform(le_spec, medical_specialty))
-            if "implant_flag_bin" in feature_cols:
-                features.append(1 if implant_flag else 0)
-            if "life_sustain_support_flag_bin" in feature_cols:
-                features.append(1 if life_sustain_flag else 0)
-
-            X_pred = np.array(features).reshape(1, -1)
-            y_pred_enc = model.predict(X_pred)[0]
-            predicted_pathway = le_target.inverse_transform([y_pred_enc])[0]
-
-            if hasattr(model, "predict_proba"):
-                proba = model.predict_proba(X_pred)[0]
-                class_probs = {
-                    le_target.inverse_transform([i])[0]: float(p)
-                    for i, p in enumerate(proba)
-                }
-            else:
-                class_probs = {predicted_pathway: 1.0}
-
-            info           = PATHWAY_INFO.get(predicted_pathway, {})
-            top_confidence = class_probs.get(predicted_pathway, 1.0)
+            def _predict_for_class(cls: str) -> tuple[str, dict]:
+                feats = []
+                if "device_class_enc" in feature_cols:
+                    feats.append(safe_transform(le_class, cls))
+                if "medical_specialty_description_enc" in feature_cols:
+                    feats.append(safe_transform(le_spec, medical_specialty))
+                if "implant_flag_bin" in feature_cols:
+                    feats.append(1 if implant_flag else 0)
+                if "life_sustain_support_flag_bin" in feature_cols:
+                    feats.append(1 if life_sustain_flag else 0)
+                X = np.array(feats).reshape(1, -1)
+                y_enc = model.predict(X)[0]
+                pathway = le_target.inverse_transform([y_enc])[0]
+                if hasattr(model, "predict_proba"):
+                    proba = model.predict_proba(X)[0]
+                    probs = {le_target.inverse_transform([i])[0]: float(p) for i, p in enumerate(proba)}
+                else:
+                    probs = {pathway: 1.0}
+                return pathway, probs
 
             st.markdown('<div class="section-header">🎯 Prediction Result</div>', unsafe_allow_html=True)
 
-            res_left, res_right = st.columns([3, 2], gap="large")
-
-            with res_left:
-                st.markdown(f"""
-                <div class="result-card"
-                     style="background:{info.get('bg','#f5f5f5')};
-                            border-color:{info.get('color','#888')};
-                            color:#1a1f36;">
-                    <div class="rc-eyebrow">Recommended Pathway</div>
-                    <div class="rc-name">{info.get('icon','')} {predicted_pathway}</div>
-                    <div class="rc-meta">
-                        {info.get('label','')} &nbsp;·&nbsp;
-                        {info.get('time','')} &nbsp;·&nbsp;
-                        Risk: {info.get('risk','')}
-                    </div>
-                    <div class="rc-desc">{info.get('description','')}</div>
-                </div>
-                """, unsafe_allow_html=True)
-
-            with res_right:
-                st.markdown(f"""
-                <div class="metric-pill" style="margin-bottom:16px;">
-                    <div class="mp-value" style="color:{info.get('color','#3f51b5')}">
-                        {top_confidence:.0%}
-                    </div>
-                    <div class="mp-label">Model Confidence</div>
-                </div>
-                """, unsafe_allow_html=True)
-                st.markdown("**Confidence by Pathway**")
-                _render_confidence_bars(class_probs)
-
-            with st.expander("📊 Full probability breakdown"):
-                prob_df = pd.DataFrame(
-                    {"Pathway": list(class_probs.keys()), "Confidence": list(class_probs.values())}
-                ).sort_values("Confidence", ascending=False)
-                st.dataframe(
-                    prob_df.style.format({"Confidence": "{:.2%}"}).bar(
-                        subset=["Confidence"], color="#3f51b5"
-                    ),
-                    use_container_width=True,
-                    hide_index=True,
+            # ── "Not Sure" mode: show all 3 classes side by side ──
+            if device_class == "Not Sure":
+                st.info(
+                    "You selected **Not Sure** for device class. "
+                    "Here's the predicted pathway for each class — "
+                    "once you determine your class, focus on that column.",
+                    icon="ℹ️",
                 )
 
-            st.markdown("<br>", unsafe_allow_html=True)
-            _render_checklist(predicted_pathway)
+                known_classes = ["Class I", "Class II", "Class III"]
+                cols = st.columns(3)
+                predicted_pathways = {}
+
+                for col, cls in zip(cols, known_classes):
+                    pathway, probs = _predict_for_class(cls)
+                    predicted_pathways[cls] = pathway
+                    info = PATHWAY_INFO.get(pathway, {})
+                    top_conf = probs.get(pathway, 1.0)
+                    with col:
+                        st.markdown(f"""
+                        <div class="result-card"
+                             style="background:{info.get('bg','#f5f5f5')};
+                                    border-color:{info.get('color','#888')};
+                                    color:#1a1f36;padding:20px 22px;">
+                            <div class="rc-eyebrow">{cls}</div>
+                            <div class="rc-name" style="font-size:24px;">{info.get('icon','')} {pathway}</div>
+                            <div class="rc-meta">{info.get('time','')} · Risk: {info.get('risk','')}</div>
+                            <div class="rc-desc" style="font-size:13px;">{info.get('description','')}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        st.markdown(f"""
+                        <div class="metric-pill" style="margin-top:10px;">
+                            <div class="mp-value" style="color:{info.get('color','#3f51b5')};font-size:22px;">{top_conf:.0%}</div>
+                            <div class="mp-label">Confidence</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                st.markdown("<br>", unsafe_allow_html=True)
+                with st.expander("❓ How to find your device class"):
+                    st.markdown(CLASS_LOOKUP_HINT)
+
+                # Show checklist for the most likely pathway (Class II result, most common)
+                dominant = predicted_pathways.get("Class II", list(predicted_pathways.values())[0])
+                st.markdown(
+                    f"*Showing checklist for the **Class II** prediction ({dominant}) "
+                    f"as a starting point — update once you confirm your class.*"
+                )
+                st.markdown("<br>", unsafe_allow_html=True)
+                _render_checklist(dominant)
+
+            # ── Normal single-class prediction ──
+            else:
+                predicted_pathway, class_probs = _predict_for_class(device_class)
+                info           = PATHWAY_INFO.get(predicted_pathway, {})
+                top_confidence = class_probs.get(predicted_pathway, 1.0)
+
+                res_left, res_right = st.columns([3, 2], gap="large")
+
+                with res_left:
+                    st.markdown(f"""
+                    <div class="result-card"
+                         style="background:{info.get('bg','#f5f5f5')};
+                                border-color:{info.get('color','#888')};
+                                color:#1a1f36;">
+                        <div class="rc-eyebrow">Recommended Pathway</div>
+                        <div class="rc-name">{info.get('icon','')} {predicted_pathway}</div>
+                        <div class="rc-meta">
+                            {info.get('label','')} &nbsp;·&nbsp;
+                            {info.get('time','')} &nbsp;·&nbsp;
+                            Risk: {info.get('risk','')}
+                        </div>
+                        <div class="rc-desc">{info.get('description','')}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                with res_right:
+                    st.markdown(f"""
+                    <div class="metric-pill" style="margin-bottom:16px;">
+                        <div class="mp-value" style="color:{info.get('color','#3f51b5')}">
+                            {top_confidence:.0%}
+                        </div>
+                        <div class="mp-label">Model Confidence</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.markdown("**Confidence by Pathway**")
+                    _render_confidence_bars(class_probs)
+
+                with st.expander("📊 Full probability breakdown"):
+                    prob_df = pd.DataFrame(
+                        {"Pathway": list(class_probs.keys()), "Confidence": list(class_probs.values())}
+                    ).sort_values("Confidence", ascending=False)
+                    st.dataframe(
+                        prob_df.style.format({"Confidence": "{:.2%}"}).bar(
+                            subset=["Confidence"], color="#3f51b5"
+                        ),
+                        use_container_width=True,
+                        hide_index=True,
+                    )
+
+                st.markdown("<br>", unsafe_allow_html=True)
+                _render_checklist(predicted_pathway)
 
         except Exception as exc:
             st.error(f"Prediction failed: {exc}")
