@@ -52,18 +52,10 @@ CUSTOM_CSS = """
 /* ── Global ─────────────────────────────────────────────────────── */
 [data-testid="stAppViewContainer"] { background: #f4f6fb; }
 
-/* Base font scale */
+/* Dark navy text + 50% font scale across all main content */
 [data-testid="stMain"] {
     font-size: 21px !important;
-    color: #ffffff !important;
-}
-
-/* Element containers — rgb(27, 56, 105) background, white text */
-[data-testid="stMain"] [data-testid="stElementContainer"],
-[data-testid="stMain"] [data-testid="element-container"] {
-    background-color: rgb(27, 56, 105) !important;
-    border-radius: 8px;
-    padding: 8px 12px;
+    color: #1a2744 !important;
 }
 [data-testid="stMain"] p,
 [data-testid="stMain"] span,
@@ -72,14 +64,12 @@ CUSTOM_CSS = """
 [data-testid="stMain"] div,
 [data-testid="stMain"] td,
 [data-testid="stMain"] th {
-    color: #ffffff !important;
+    color: #1a2744 !important;
 }
-
-/* h1 — rgb(0, 108, 208) background, white text */
 [data-testid="stMain"] h1,
 [data-testid="stMain"] .page-hero h1,
 [data-testid="stMain"] div h1 {
-    background-color: rgb(0, 108, 208) !important;
+    background-color: rgb(27, 56, 105) !important;
     color: #ffffff !important;
     padding: 12px 20px !important;
     border-radius: 8px !important;
@@ -87,11 +77,11 @@ CUSTOM_CSS = """
 [data-testid="stMain"] h2,
 [data-testid="stMain"] h3,
 [data-testid="stMain"] h4 {
-    color: #ffffff !important;
+    color: #0d1b3e !important;
 }
 [data-testid="stMain"] input,
 [data-testid="stMain"] textarea,
-[data-testid="stMain"] select { font-size: 21px !important; color: #ffffff !important; }
+[data-testid="stMain"] select { font-size: 21px !important; color: #1a2744 !important; }
 [data-testid="stMain"] .stCaption,
 [data-testid="stMain"] small   { font-size: 18px !important; color: #2a3f6f !important; }
 [data-testid="stMain"] { padding-top: 0 !important; }
