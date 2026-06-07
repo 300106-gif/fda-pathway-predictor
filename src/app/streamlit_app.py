@@ -192,14 +192,14 @@ header[data-testid="stHeader"] { background: transparent; }
 
 /* ── Page hero banner ────────────────────────────────────────────── */
 .page-hero {
-    background: linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%);
-    color: #fff;
+    background: rgb(27, 56, 105);
+    color: #ffffff;
     border-radius: 16px;
     padding: 30px 36px;
     margin-bottom: 28px;
 }
-.page-hero h1 { font-size: 39px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.3px; }
-.page-hero p  { margin: 0; opacity: .88; font-size: 22.5px; line-height: 1.6; }
+.page-hero h1 { font-size: 39px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.3px; color: #ffffff !important; background: none !important; padding: 0 !important; border-radius: 0 !important; }
+.page-hero p  { margin: 0; opacity: 1; font-size: 22.5px; line-height: 1.6; color: #ffffff !important; }
 
 /* ── Section divider ─────────────────────────────────────────────── */
 .section-header {
