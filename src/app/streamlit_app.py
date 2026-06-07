@@ -337,18 +337,11 @@ header[data-testid="stHeader"] { background: transparent; }
 
 /* ── Primary button ──────────────────────────────────────────────── */
 div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"] {
-    background-color: rgb(27, 56, 105) !important;
-    color: #ffffff !important;
-    border: none !important;
     border-radius: 10px;
     font-weight: 700;
     letter-spacing: 0.02em;
     padding: 12px 20px;
     font-size: 22.5px;
-}
-div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"]:hover {
-    background-color: rgb(0, 108, 208) !important;
-    color: #ffffff !important;
 }
 
 /* ── Pathway tile "Learn more" buttons ───────────────────────────── */
