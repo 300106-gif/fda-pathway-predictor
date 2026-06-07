@@ -198,8 +198,25 @@ header[data-testid="stHeader"] { background: transparent; }
     padding: 30px 36px;
     margin-bottom: 28px;
 }
-.page-hero h1 { font-size: 39px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.3px; color: #ffffff !important; background: none !important; padding: 0 !important; border-radius: 0 !important; }
-.page-hero p  { margin: 0; opacity: 1; font-size: 22.5px; line-height: 1.6; color: #ffffff !important; }
+.page-hero h1,
+[data-testid="stMain"] .page-hero h1,
+[data-testid="stMarkdownContainer"] .page-hero h1 {
+    font-size: 39px !important;
+    font-weight: 800 !important;
+    margin: 0 0 8px !important;
+    letter-spacing: -0.3px !important;
+    color: #ffffff !important;
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+.page-hero p,
+[data-testid="stMain"] .page-hero p {
+    margin: 0 !important;
+    font-size: 22.5px !important;
+    line-height: 1.6 !important;
+    color: #ffffff !important;
+}
 
 /* ── Section divider ─────────────────────────────────────────────── */
 .section-header {
@@ -336,7 +353,11 @@ header[data-testid="stHeader"] { background: transparent; }
 .stSelectbox > div > div > div  { border-radius: 8px; }
 
 /* ── Primary button ──────────────────────────────────────────────── */
-div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"] {
+div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"],
+div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"] p,
+div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"] span,
+div:not([data-testid="stSidebar"]) .stButton > button[kind="primary"] * {
+    color: #ffffff !important;
     border-radius: 10px;
     font-weight: 700;
     letter-spacing: 0.02em;
