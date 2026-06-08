@@ -24,7 +24,7 @@ import streamlit.components.v1 as components
 logger = logging.getLogger(__name__)
 
 ARTIFACTS_DIR = Path(__file__).parents[2] / "artifacts"
-LOGO_PATH     = Path(__file__).parent / "assets" / "regula-logo.png"
+LOGO_PATH     = Path(__file__).parent / "assets" / "regula-BW-logo.png"
 
 # Ensure src/ is importable (needed on Streamlit Cloud)
 _ROOT = Path(__file__).parents[2]
