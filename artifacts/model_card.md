@@ -29,7 +29,7 @@ characteristics. **For planning purposes only — not a substitute for regulator
 
 ## Performance Summary
 - **Best Model**: GradientBoosting
-- **Macro F1**: `0.6313`
+- **Macro F1**: `0.7159`
 
 See `evaluation_report.md` for full per-class precision, recall, and confusion matrix.
 
